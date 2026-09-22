@@ -1,18 +1,28 @@
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
-# This 'db' object is what lets Python talk to PostgreSQL.
-# Every model (table) below is built using this same db object.
-db = SQLAlchemy()
+from flask_login import UserMixin
+from app.extensions import db
 
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     __tablename__ = 'admins'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    full_name = db.Column(db.String(150), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    exam_batches = db.relationship('ExamBatch', backref='created_by_admin', lazy=True)
+
+
+class Program(db.Model):
+    __tablename__ = 'programs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    program_name = db.Column(db.String(120), unique=True, nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+    applicants = db.relationship('Applicant', backref='program', lazy=True)
 
 
 class ExamBatch(db.Model):
@@ -24,8 +34,10 @@ class ExamBatch(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
+    venue = db.Column(db.String(120), nullable=True)
     # scheduled / open / full / closed / ongoing
     status = db.Column(db.String(20), default='scheduled')
+    created_by = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     applicants = db.relationship('Applicant', backref='exam_batch', lazy=True)
@@ -39,10 +51,10 @@ class Applicant(db.Model):
     full_name = db.Column(db.String(150), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     contact_number = db.Column(db.String(20), nullable=False)
-    desired_program = db.Column(db.String(120), nullable=False)
+    program_id = db.Column(db.Integer, db.ForeignKey('programs.id'), nullable=False)
 
-    # Numeric face data (128 values from face_recognition), stored as JSON —
-    # never a raw photo, per the project's privacy requirement.
+    # Numeric face data (128 values from face_recognition), stored as JSON.
+    # Never store a raw photo here.
     face_encoding = db.Column(db.JSON, nullable=True)
 
     reference_number = db.Column(db.String(30), unique=True, nullable=True)
@@ -66,7 +78,7 @@ class AuditLog(db.Model):
     __tablename__ = 'audit_logs'
 
     id = db.Column(db.Integer, primary_key=True)
-    actor = db.Column(db.String(150), nullable=False)   # who did it (admin username or 'system')
-    action = db.Column(db.String(255), nullable=False)  # what happened
-    details = db.Column(db.Text, nullable=True)          # extra info, optional
+    actor = db.Column(db.String(150), nullable=False)   # admin username, or 'system'
+    action = db.Column(db.String(255), nullable=False)
+    details = db.Column(db.Text, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
