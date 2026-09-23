@@ -1,0 +1,52 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Register - Exam Kiosk{% endblock %}
+{% block content %}
+
+    <div class="step-track">
+        <div class="step active"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+    </div>
+    <div class="step-labels">
+        <span class="current">1. Register</span>
+        <span>2. Batch</span>
+        <span>3. Verify</span>
+        <span>4. Confirmed</span>
+    </div>
+
+    <h1 class="kiosk-heading">Applicant Registration</h1>
+    <p class="kiosk-subtext">Enter your details below. You'll set up face verification in the next step.</p>
+
+    <form method="POST" action="{{ url_for('kiosk.register') }}">
+        <div class="field">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" required>
+        </div>
+
+        <div class="field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="10" max="100" required>
+        </div>
+
+        <div class="field">
+            <label for="contact_number">Contact Number</label>
+            <input type="tel" id="contact_number" name="contact_number" required>
+        </div>
+
+        <div class="field">
+            <label for="program_id">Desired Program</label>
+            <select id="program_id" name="program_id" required>
+                <option value="" disabled selected>Select a program</option>
+                {% for program in programs %}
+                    <option value="{{ program.id }}">{{ program.program_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Continue to Batch Selection</button>
+    </form>
+
+    <p class="helper-text">Your information is used only for exam attendance verification.</p>
+
+{% endblock %}

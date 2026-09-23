@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Exam Kiosk{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/kiosk.css') }}">
+</head>
+<body>
+    <div class="kiosk-shell">
+        <div class="kiosk-card">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>
