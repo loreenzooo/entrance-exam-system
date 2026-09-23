@@ -2,27 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
 </head>
 <body>
-    <h1>Admin Login</h1>
+    <div class="login-shell">
+        <div class="login-card">
+            <h1>Admin Login</h1>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li style="color:red;">{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-error">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-    <form method="POST">
-        <label>Username</label><br>
-        <input type="text" name="username" required><br><br>
-        <label>Password</label><br>
-        <input type="password" name="password" required><br><br>
-        <button type="submit">Log In</button>
-    </form>
+            <form method="POST">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Log In</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
