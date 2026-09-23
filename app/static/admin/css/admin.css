@@ -150,16 +150,17 @@ body {
     margin: 0 0 28px;
 }
 
-.login-card .field { margin-bottom: 18px; }
+/* Form fields - used on login page AND any other admin form (e.g. Add Program) */
+.field { margin-bottom: 18px; }
 
-.login-card label {
+.field label {
     display: block;
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 6px;
 }
 
-.login-card input {
+.field input {
     width: 100%;
     padding: 12px 14px;
     font-size: 15px;
@@ -168,7 +169,7 @@ body {
     font-family: var(--font-body);
 }
 
-.login-card input:focus {
+.field input:focus {
     outline: 2px solid var(--color-primary);
     outline-offset: 1px;
     border-color: var(--color-primary);
@@ -187,6 +188,8 @@ body {
     font-family: var(--font-body);
 }
 
+.btn-primary:hover { background: #2C3D66; }
+
 .flash-error {
     background: #FBEAEA;
     color: #A13A3A;
@@ -200,4 +203,53 @@ body {
     .admin-layout { flex-direction: column; }
     .sidebar { width: 100%; }
     .admin-content { padding: 24px; }
+}
+
+/* Small inline forms used inside content pages, e.g. "Add Program" */
+.inline-form-card {
+    max-width: 420px;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+/* Data tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.data-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+}
+
+.data-table td.muted {
+    color: var(--color-text-muted);
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #A13A3A;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-body);
+    padding: 0;
+}
+
+.link-button:hover {
+    text-decoration: underline;
 }
