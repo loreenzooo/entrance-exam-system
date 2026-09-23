@@ -1,0 +1,49 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Programs{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Programs</h1>
+    <p class="page-subtext">Manage the list of programs applicants can select at the kiosk.</p>
+
+    <div class="inline-form-card">
+        <form method="POST">
+            <div class="field">
+                <label for="program_name">Program Name</label>
+                <input type="text" id="program_name" name="program_name" required>
+            </div>
+            <div class="field">
+                <label for="description">Description (optional)</label>
+                <input type="text" id="description" name="description">
+            </div>
+            <button type="submit" class="btn-primary">Add Program</button>
+        </form>
+    </div>
+
+    {% if programs %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Program Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for program in programs %}
+                <tr>
+                    <td>{{ program.program_name }}</td>
+                    <td class="muted">{{ program.description or "-" }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.delete_program', program_id=program.id) }}">
+                            <button type="submit" class="link-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="page-subtext">No programs added yet.</p>
+    {% endif %}
+
+{% endblock %}
