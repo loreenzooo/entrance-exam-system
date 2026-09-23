@@ -11,7 +11,7 @@ from app.models import Admin, ExamBatch, Applicant, Attendance, AuditLog
 # 1. Load the hidden variables from the .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 
 # 2. Configure the PostgreSQL database connection
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -35,14 +35,14 @@ from app.admin.routes import admin_bp
 app.register_blueprint(auth_bp, url_prefix='/admin')
 app.register_blueprint(admin_bp, url_prefix='/admin')
 
-# 6. Create the tables based on your models.py blueprints
+# 6. Register the kiosk blueprint (public, no login - this IS the home page now)
+from app.kiosk.routes import kiosk_bp
+app.register_blueprint(kiosk_bp)
+
+# 7. Create the tables based on your models.py blueprints
 with app.app_context():
     db.create_all()
     print("✅ Successfully connected to PostgreSQL and created the tables!")
-
-@app.route('/')
-def hello():
-    return "Database connected and ready!"
 
 if __name__ == '__main__':
     app.run(debug=True)
