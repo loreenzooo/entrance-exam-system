@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
 </head>
+
 <body>
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-brand">Entrance Exam<br>Admin</div>
             <nav>
                 <a href="{{ url_for('admin.dashboard') }}"
-                class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">Dashboard</a>
+                    class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">Dashboard</a>
+                <a href="{{ url_for('admin.programs') }}"
+                    class="{{ 'active' if request.endpoint == 'admin.programs' }}">Programs</a>
                 <a href="#">Exam Batches</a>
                 <a href="#">Applicants</a>
                 <a href="#">Attendance</a>
@@ -25,4 +29,5 @@
         </main>
     </div>
 </body>
+
 </html>
