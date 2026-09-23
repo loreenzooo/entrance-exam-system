@@ -1,12 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, Admin!</h1>
-    <p>You're logged in. Dashboard content goes here.</p>
-    <a href="{{ url_for('admin_auth.logout') }}">Log Out</a>
-</body>
-</html>
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Dashboard</h1>
+    <p class="page-subtext">Today's overview.</p>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Registrations today</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Attendance verified today</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Open exam batches</span>
+        </div>
+    </div>
+
+    <p class="page-subtext">Recent activity, batch quick-actions, and applicant search will go here.</p>
+
+{% endblock %}
