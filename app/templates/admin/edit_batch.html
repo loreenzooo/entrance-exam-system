@@ -1,0 +1,40 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Edit Batch{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Edit Batch</h1>
+    <p class="page-subtext">{{ batch.batch_name }}</p>
+
+    <div class="inline-form-card">
+        <form method="POST">
+            <div class="field">
+                <label for="batch_name">Batch Name</label>
+                <input type="text" id="batch_name" name="batch_name" value="{{ batch.batch_name }}" required>
+            </div>
+            <div class="field">
+                <label for="exam_date">Exam Date</label>
+                <input type="date" id="exam_date" name="exam_date" value="{{ batch.exam_date.strftime('%Y-%m-%d') }}" required>
+            </div>
+            <div class="field">
+                <label for="start_time">Start Time</label>
+                <input type="time" id="start_time" name="start_time" value="{{ batch.start_time.strftime('%H:%M') }}" required>
+            </div>
+            <div class="field">
+                <label for="end_time">End Time</label>
+                <input type="time" id="end_time" name="end_time" value="{{ batch.end_time.strftime('%H:%M') }}" required>
+            </div>
+            <div class="field">
+                <label for="capacity">Capacity</label>
+                <input type="number" id="capacity" name="capacity" min="1" value="{{ batch.capacity }}" required>
+            </div>
+            <div class="field">
+                <label for="venue">Venue (optional)</label>
+                <input type="text" id="venue" name="venue" value="{{ batch.venue or '' }}">
+            </div>
+            <button type="submit" class="btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('admin.batches') }}" class="link-button">Cancel</a>
+
+{% endblock %}

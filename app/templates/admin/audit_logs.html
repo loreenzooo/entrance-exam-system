@@ -1,0 +1,50 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Audit Logs</h1>
+    <p class="page-subtext">System activity trail. Records here cannot be edited or deleted, by design.</p>
+
+    <form method="GET" class="inline-form-card">
+        <div class="field">
+            <label for="actor">Filter by Actor</label>
+            <select id="actor" name="actor">
+                <option value="">All Actors</option>
+                {% for actor in distinct_actors %}
+                    <option value="{{ actor }}" {% if actor_filter == actor %}selected{% endif %}>{{ actor }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label for="search">Search action or details</label>
+            <input type="text" id="search" name="search" value="{{ search }}" placeholder="e.g. 'batch', 'registered'">
+        </div>
+        <button type="submit" class="btn-primary">Apply Filters</button>
+    </form>
+
+    {% if logs %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="muted">{{ log.timestamp.strftime('%b %d, %Y %I:%M %p') }}</td>
+                    <td>{{ log.actor }}</td>
+                    <td>{{ log.action }}</td>
+                    <td class="muted">{{ log.details or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="page-subtext">No audit log entries match these filters.</p>
+    {% endif %}
+
+{% endblock %}

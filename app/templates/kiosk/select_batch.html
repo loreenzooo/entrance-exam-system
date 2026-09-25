@@ -1,0 +1,43 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Select Exam Batch{% endblock %}
+{% block content %}
+
+    <div class="step-track">
+        <div class="step done"></div>
+        <div class="step active"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+    </div>
+    <div class="step-labels">
+        <span>1. Register</span>
+        <span class="current">2. Batch</span>
+        <span>3. Verify</span>
+        <span>4. Confirmed</span>
+    </div>
+
+    <h1 class="kiosk-heading">Select Your Exam Batch</h1>
+    <p class="kiosk-subtext">Hi {{ applicant.full_name }}, choose an available exam slot below.</p>
+
+    <form method="POST">
+        {% if batches %}
+            {% for batch in batches %}
+                <label class="batch-option">
+                    <input type="radio" name="exam_batch_id" value="{{ batch.id }}" required>
+                    <div class="batch-option-details">
+                        <span class="batch-option-name">{{ batch.batch_name }}</span>
+                        <span class="batch-option-meta">
+                            {{ batch.exam_date.strftime('%b %d, %Y') }}
+                            · {{ batch.start_time.strftime('%I:%M %p') }} - {{ batch.end_time.strftime('%I:%M %p') }}
+                            {% if batch.venue %} · {{ batch.venue }}{% endif %}
+                        </span>
+                        <span class="batch-option-meta">{{ batch.attendances|length }} / {{ batch.capacity }} slots filled</span>
+                    </div>
+                </label>
+            {% endfor %}
+            <button type="submit" class="btn-primary">Continue to Verification</button>
+        {% else %}
+            <p class="helper-text">No exam batches are currently open. Please check back later or ask the front desk.</p>
+        {% endif %}
+    </form>
+
+{% endblock %}

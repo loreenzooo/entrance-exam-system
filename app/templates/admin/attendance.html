@@ -1,0 +1,64 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Attendance</h1>
+    <p class="page-subtext">View, filter, edit, or remove attendance records.</p>
+
+    <form method="GET" class="inline-form-card">
+        <div class="field">
+            <label for="batch_id">Filter by Batch</label>
+            <select id="batch_id" name="batch_id">
+                <option value="">All Batches</option>
+                {% for batch in batches %}
+                    <option value="{{ batch.id }}" {% if batch_filter == batch.id|string %}selected{% endif %}>
+                        {{ batch.batch_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label for="status">Filter by Status</label>
+            <select id="status" name="status">
+                <option value="">All Statuses</option>
+                <option value="present" {% if status_filter == 'present' %}selected{% endif %}>Present</option>
+                <option value="late" {% if status_filter == 'late' %}selected{% endif %}>Late</option>
+                <option value="absent" {% if status_filter == 'absent' %}selected{% endif %}>Absent</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-primary">Apply Filters</button>
+    </form>
+
+    {% if records %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Batch</th>
+                    <th>Verified At</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.applicant.full_name }}</td>
+                    <td class="muted">{{ record.exam_batch.batch_name }}</td>
+                    <td class="muted">{{ record.verified_at.strftime('%b %d, %Y %I:%M %p') }}</td>
+                    <td><span class="status-badge status-{{ record.status }}">{{ record.status }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_attendance', attendance_id=record.id) }}" class="link-button">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.delete_attendance', attendance_id=record.id) }}" class="inline-form">
+                            <button type="submit" class="link-button link-button-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="page-subtext">No attendance records match these filters.</p>
+    {% endif %}
+
+{% endblock %}

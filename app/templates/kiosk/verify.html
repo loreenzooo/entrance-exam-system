@@ -1,0 +1,48 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Face Verification{% endblock %}
+{% block content %}
+
+    <div class="step-track">
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step active"></div>
+        <div class="step"></div>
+    </div>
+    <div class="step-labels">
+        <span>1. Register</span>
+        <span>2. Batch</span>
+        <span class="current">3. Verify</span>
+        <span>4. Confirmed</span>
+    </div>
+
+    <h1 class="kiosk-heading">Face Verification</h1>
+    <p class="kiosk-subtext">Hi {{ applicant.full_name }}, position your face in the frame below.</p>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div id="camera-frame" class="camera-frame frame-warning">
+        <video id="camera-video" class="camera-preview" autoplay playsinline muted></video>
+    </div>
+
+    <p id="face-status" class="face-status">Starting camera...</p>
+
+    <canvas id="camera-canvas" class="hidden-canvas"></canvas>
+    <canvas id="brightness-canvas" class="hidden-canvas"></canvas>
+
+    <form method="POST" id="verify-form">
+        <input type="hidden" name="photo_data" id="photo_data">
+        <button type="button" id="capture-btn" class="btn-primary" disabled>Capture &amp; Verify</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+    <script src="{{ url_for('static', filename='kiosk/js/camera.js') }}"></script>
+    <script src="{{ url_for('static', filename='kiosk/js/face-detector.js') }}"></script>
+    <script src="{{ url_for('static', filename='kiosk/js/verify.js') }}"></script>
+
+{% endblock %}

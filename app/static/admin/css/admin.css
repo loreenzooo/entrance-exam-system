@@ -160,16 +160,19 @@ body {
     margin-bottom: 6px;
 }
 
-.field input {
+.field input,
+.field select {
     width: 100%;
     padding: 12px 14px;
     font-size: 15px;
     border: 1.5px solid var(--color-border);
     border-radius: 4px;
     font-family: var(--font-body);
+    background: white;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
     outline: 2px solid var(--color-primary);
     outline-offset: 1px;
     border-color: var(--color-primary);
@@ -252,4 +255,56 @@ body {
 
 .link-button:hover {
     text-decoration: underline;
+}
+
+.link-button-danger {
+    color: #A13A3A;
+    margin-left: 12px;
+}
+
+.inline-form {
+    display: inline;
+}
+
+/* Status badges for exam batches */
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-scheduled,
+.status-open {
+    background: #E9F1EF;
+    color: var(--color-success);
+}
+
+.status-ongoing {
+    background: #FFF3E4;
+    color: var(--color-warning);
+}
+
+.status-full,
+.status-closed {
+    background: #EDEEF0;
+    color: var(--color-text-muted);
+}
+
+/* Attendance statuses */
+.status-present {
+    background: #E9F1EF;
+    color: var(--color-success);
+}
+
+.status-late {
+    background: #FFF3E4;
+    color: var(--color-warning);
+}
+
+.status-absent {
+    background: #FBEAEA;
+    color: #A13A3A;
 }

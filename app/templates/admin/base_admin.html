@@ -17,10 +17,13 @@
                     class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">Dashboard</a>
                 <a href="{{ url_for('admin.programs') }}"
                     class="{{ 'active' if request.endpoint == 'admin.programs' }}">Programs</a>
-                <a href="#">Exam Batches</a>
-                <a href="#">Applicants</a>
-                <a href="#">Attendance</a>
-                <a href="#">Audit Logs</a>
+                <a href="{{ url_for('admin.batches') }}"
+                    class="{{ 'active' if request.endpoint in ['admin.batches', 'admin.edit_batch'] }}">Exam Batches</a>
+                <a href="{{ url_for('admin.applicants') }}"
+                    class="{{ 'active' if request.endpoint in ['admin.applicants', 'admin.edit_applicant'] }}">Applicants</a>
+                <a href="{{ url_for('admin.attendance') }}"
+                    class="{{ 'active' if request.endpoint in ['admin.attendance', 'admin.edit_attendance'] }}">Attendance</a>
+                <a href="{{ url_for('admin.audit_logs') }}">Audit Logs</a>
             </nav>
             <a href="{{ url_for('admin_auth.logout') }}" class="logout">Log Out</a>
         </aside>

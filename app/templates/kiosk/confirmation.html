@@ -1,0 +1,33 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Confirmation{% endblock %}
+{% block content %}
+
+    <div class="step-track">
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step active"></div>
+    </div>
+    <div class="step-labels">
+        <span>1. Register</span>
+        <span>2. Batch</span>
+        <span>3. Verify</span>
+        <span class="current">4. Confirmed</span>
+    </div>
+
+    <h1 class="kiosk-heading">Attendance Confirmed</h1>
+    <p class="kiosk-subtext">Thank you, {{ applicant.full_name }}. Your attendance has been recorded.</p>
+
+    <div class="confirmation-box">
+        <span class="confirmation-label">Reference Number</span>
+        <span class="confirmation-ref">{{ applicant.reference_number }}</span>
+    </div>
+
+    <p class="helper-text">
+        Batch: {{ applicant.exam_batch.batch_name }} —
+        {{ applicant.exam_batch.exam_date.strftime('%b %d, %Y') }}
+    </p>
+
+    <a href="{{ url_for('kiosk.register') }}" class="btn-primary btn-link">Done - Next Applicant</a>
+
+{% endblock %}

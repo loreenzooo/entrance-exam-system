@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Edit Attendance{% endblock %}
+{% block content %}
+
+    <h1 class="page-heading">Edit Attendance</h1>
+    <p class="page-subtext">{{ record.applicant.full_name }} — {{ record.exam_batch.batch_name }}</p>
+
+    <div class="inline-form-card">
+        <form method="POST">
+            <div class="field">
+                <label for="status">Status</label>
+                <select id="status" name="status" required>
+                    <option value="present" {% if record.status == 'present' %}selected{% endif %}>Present</option>
+                    <option value="late" {% if record.status == 'late' %}selected{% endif %}>Late</option>
+                    <option value="absent" {% if record.status == 'absent' %}selected{% endif %}>Absent</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('admin.attendance') }}" class="link-button">Cancel</a>
+
+{% endblock %}

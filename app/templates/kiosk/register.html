@@ -18,6 +18,14 @@
     <h1 class="kiosk-heading">Applicant Registration</h1>
     <p class="kiosk-subtext">Enter your details below. You'll set up face verification in the next step.</p>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <form method="POST" action="{{ url_for('kiosk.register') }}">
         <div class="field">
             <label for="full_name">Full Name</label>
