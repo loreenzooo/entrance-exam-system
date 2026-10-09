@@ -1,0 +1,11 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Exam Kiosk{% endblock %}
+{% block content %}
+
+    <h1 class="kiosk-heading">Entrance Exam Kiosk</h1>
+    <p class="kiosk-subtext">New here? Register first. Already registered and it's exam day? Time In.</p>
+
+    <a href="{{ url_for('kiosk.verify') }}" class="btn-primary btn-link">Register</a>
+    <a href="{{ url_for('kiosk.time_in') }}" class="btn-primary btn-link btn-secondary">Time In</a>
+
+{% endblock %}

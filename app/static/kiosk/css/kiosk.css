@@ -284,3 +284,87 @@ body {
     color: var(--color-primary);
     letter-spacing: 0.5px;
 }
+
+/* Two fields side by side (last name + suffix) */
+.field-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+ 
+.field .optional {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+ 
+/* Biometric consent notice */
+.consent-box {
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+ 
+.consent-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0 0 12px;
+}
+ 
+.consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+ 
+.consent-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+ 
+/* Confirmation details list */
+.confirmation-details {
+    margin: 0 0 8px;
+}
+ 
+.confirmation-details div {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+}
+ 
+/* Second button on the home screen */
+.btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+}
+ 
+.btn-secondary:hover {
+    background: var(--color-bg);
+}
+ 
+/* Small text link under the camera (Cancel) */
+.helper-link {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-top: 16px;
+}
+
+.confirmation-details dt { color: var(--color-text-muted); }
+.confirmation-details dd { margin: 0; font-weight: 500; text-align: right; }
+ 
+@media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+}
+ 

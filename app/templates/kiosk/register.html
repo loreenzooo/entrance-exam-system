@@ -1,22 +1,22 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Register - Exam Kiosk{% endblock %}
+{% block title %}Your Details - Exam Kiosk{% endblock %}
 {% block content %}
 
     <div class="step-track">
+        <div class="step done"></div>
         <div class="step active"></div>
-        <div class="step"></div>
         <div class="step"></div>
         <div class="step"></div>
     </div>
     <div class="step-labels">
-        <span class="current">1. Register</span>
-        <span>2. Batch</span>
-        <span>3. Verify</span>
+        <span>1. Face</span>
+        <span class="current">2. Details</span>
+        <span>3. Batch</span>
         <span>4. Confirmed</span>
     </div>
 
     <h1 class="kiosk-heading">Applicant Registration</h1>
-    <p class="kiosk-subtext">Enter your details below. You'll set up face verification in the next step.</p>
+    <p class="kiosk-subtext">Your face was captured. Now enter your details.</p>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -28,33 +28,54 @@
 
     <form method="POST" action="{{ url_for('kiosk.register') }}">
         <div class="field">
-            <label for="full_name">Full Name</label>
-            <input type="text" id="full_name" name="full_name" required>
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="{{ form.first_name or '' }}" required>
         </div>
 
         <div class="field">
-            <label for="age">Age</label>
-            <input type="number" id="age" name="age" min="10" max="100" required>
+            <label for="middle_name">Middle Name <span class="optional">(optional)</span></label>
+            <input type="text" id="middle_name" name="middle_name" value="{{ form.middle_name or '' }}">
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" value="{{ form.last_name or '' }}" required>
+            </div>
+            <div class="field">
+                <label for="suffix">Suffix <span class="optional">(optional)</span></label>
+                <input type="text" id="suffix" name="suffix" value="{{ form.suffix or '' }}" placeholder="Jr., III">
+            </div>
         </div>
 
         <div class="field">
             <label for="contact_number">Contact Number</label>
-            <input type="tel" id="contact_number" name="contact_number" required>
+            <input type="tel" id="contact_number" name="contact_number" value="{{ form.contact_number or '' }}" required>
         </div>
 
         <div class="field">
-            <label for="program_id">Desired Program</label>
-            <select id="program_id" name="program_id" required>
-                <option value="" disabled selected>Select a program</option>
-                {% for program in programs %}
-                    <option value="{{ program.id }}">{{ program.program_name }}</option>
-                {% endfor %}
-            </select>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ form.email or '' }}" required>
+        </div>
+
+        <div class="field">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" value="{{ form.address or '' }}" required>
+        </div>
+
+        <div class="consent-box">
+            <p class="consent-text">
+                <strong>Biometric consent.</strong> We store a numeric template of your face to check for
+                duplicate registrations and to record your attendance on exam day.
+                Your photo is not kept.
+            </p>
+            <label class="consent-check">
+                <input type="checkbox" name="biometric_consent" value="yes" required>
+                <span>I have read and accept the biometric consent notice.</span>
+            </label>
         </div>
 
         <button type="submit" class="btn-primary">Continue to Batch Selection</button>
     </form>
-
-    <p class="helper-text">Your information is used only for exam attendance verification.</p>
 
 {% endblock %}

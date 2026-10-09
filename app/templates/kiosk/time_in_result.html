@@ -1,0 +1,29 @@
+{% extends "kiosk/base_kiosk.html" %}
+{% block title %}Time In - Exam Kiosk{% endblock %}
+{% block content %}
+
+    {% if already %}
+        <h1 class="kiosk-heading">Already Timed In</h1>
+        <p class="kiosk-subtext">{{ applicant.full_name }}, you already timed in earlier. Nothing new was recorded.</p>
+    {% else %}
+        <h1 class="kiosk-heading">Time In Recorded</h1>
+        <p class="kiosk-subtext">Welcome, {{ applicant.full_name }}. Your attendance has been recorded.</p>
+    {% endif %}
+
+    <div class="confirmation-box">
+        <span class="confirmation-label">Reference Number</span>
+        <span class="confirmation-ref">{{ record.reference_number }}</span>
+    </div>
+
+    <dl class="confirmation-details">
+        <div><dt>Name</dt><dd>{{ applicant.full_name }}</dd></div>
+        <div><dt>Batch ID</dt><dd>{{ applicant.exam_batch.id }}</dd></div>
+        <div><dt>Building</dt><dd>{{ applicant.exam_batch.building }}</dd></div>
+        <div><dt>Room</dt><dd>{{ applicant.exam_batch.room }}</dd></div>
+        <div><dt>Time In</dt><dd>{{ record.timed_in_at.strftime('%b %d, %Y %I:%M %p') }}</dd></div>
+        <div><dt>Status</dt><dd>{{ record.status }}</dd></div>
+    </dl>
+
+    <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-link">Done</a>
+
+{% endblock %}

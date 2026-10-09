@@ -1,3 +1,6 @@
+import mimetypes
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
 from flask import Flask
 from dotenv import load_dotenv
 import os
@@ -6,7 +9,7 @@ import os
 from app.extensions import db, login_manager
 
 # Import your models
-from app.models import Admin, ExamBatch, Applicant, Attendance, AuditLog
+from app.models import Admin, ExamBatch, Applicant, Attendance
 
 # 1. Load the hidden variables from the .env file
 load_dotenv()
@@ -37,7 +40,7 @@ app.register_blueprint(admin_bp, url_prefix='/admin')
 
 # 6. Register the kiosk blueprint (public, no login - this IS the home page now)
 from app.kiosk.routes import kiosk_bp
-app.register_blueprint(kiosk_bp)
+app.register_blueprint(kiosk_bp, url_prefix='/kiosk')
 
 # 7. Create the tables based on your models.py blueprints
 with app.app_context():

@@ -1,22 +1,9 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Face Capture - Exam Kiosk{% endblock %}
+{% block title %}Time In - Exam Kiosk{% endblock %}
 {% block content %}
 
-    <div class="step-track">
-        <div class="step active"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-    </div>
-    <div class="step-labels">
-        <span class="current">1. Face</span>
-        <span>2. Details</span>
-        <span>3. Batch</span>
-        <span>4. Confirmed</span>
-    </div>
-
-    <h1 class="kiosk-heading">Face Capture</h1>
-    <p class="kiosk-subtext">Position your face in the frame. The Capture button turns on once your face is clear.</p>
+    <h1 class="kiosk-heading">Time In</h1>
+    <p class="kiosk-subtext">Look at the camera. The Capture button turns on once your face is clear.</p>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -40,7 +27,7 @@
         <button type="button" id="capture-btn" class="btn-primary" disabled>Capture</button>
     </form>
 
-    <p class="helper-text">Your face is converted to a numeric template. The photo itself is not stored.</p>
+    <a href="{{ url_for('kiosk.home') }}" class="helper-link">Cancel</a>
 
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     <script src="{{ url_for('static', filename='kiosk/js/camera.js') }}"></script>
