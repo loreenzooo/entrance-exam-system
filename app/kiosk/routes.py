@@ -211,9 +211,12 @@ def time_in():
             return redirect(url_for('kiosk.time_in'))
 
         encoding = face_service.encode_face(photo_data)
+        if encoding is None:
+            flash("We couldn't read your face. Please try again.")
+            return redirect(url_for('kiosk.time_in'))
 
-        # Step 4: search all registered faces for the best match
-        match = face_service.find_duplicate(encoding, Applicant.query.all())
+        # Step 4: closest registered face within the threshold
+        match = face_service.find_best_match(encoding, Applicant.query.all())
 
         if not match:
             attempts = session.get('time_in_attempts', 0) + 1
@@ -230,36 +233,27 @@ def time_in():
         session.pop('time_in_attempts', None)
 
         # Step 5: already timed in? Show the earlier time-in, record nothing new.
-        if match.attendance is not None:
+        if match.attendance is not None and match.attendance.status == 'Present':
             session['time_in_applicant_id'] = match.id
             session['time_in_already'] = True
             return redirect(url_for('kiosk.time_in_result'))
 
-         # Time In window: from EARLY_GRACE_MINUTES before the batch starts
-        # until the batch end time. Outside it, nothing is recorded.
+        # Time In closes when the applicant's batch ends.
         batch = match.exam_batch
-        opens_at = (datetime.combine(batch.exam_date, batch.start_time)
-                    - timedelta(minutes=EARLY_GRACE_MINUTES))
         closes_at = datetime.combine(batch.exam_date, batch.end_time)
-        now = datetime.now()
-
-        if now < opens_at:
-            flash("You can't time in yet. The exam has not started. "
-                  f"Time In opens at {opens_at.strftime('%I:%M %p, %b %d, %Y')}.")
-            return redirect(url_for('kiosk.time_in'))
-
-        if now > closes_at:
+        if datetime.now() > closes_at:
             flash("Time In for your exam batch has closed.")
             return redirect(url_for('kiosk.time_in'))
 
         # Step 6: record Present with the exact timestamp and a reference number
-        record = Attendance(
-            applicant_id=match.id,
-            timed_in_at=datetime.now(),
-            status='Present',
-            reference_number=_new_reference_number(),
-        )
-        db.session.add(record)
+        record = match.attendance
+        if record is None:
+            record = Attendance(applicant_id=match.id)
+            db.session.add(record)
+        record.timed_in_at = datetime.now()
+        record.status = 'Present'
+        record.reference_number = _new_reference_number()
+
         try:
             db.session.commit()
         except IntegrityError:
@@ -275,7 +269,6 @@ def time_in():
 
     return render_template('kiosk/time_in.html')
 
-
 @kiosk_bp.route('/time-in/result')
 def time_in_result():
     applicant_id = session.get('time_in_applicant_id')
@@ -283,7 +276,8 @@ def time_in_result():
         return redirect(url_for('kiosk.home'))
 
     applicant = db.session.get(Applicant, applicant_id)
-    if applicant is None or applicant.attendance is None:
+    if (applicant is None or applicant.attendance is None
+            or applicant.attendance.status != 'Present'):
         return redirect(url_for('kiosk.home'))
 
     return render_template(

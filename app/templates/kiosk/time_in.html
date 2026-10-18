@@ -3,7 +3,7 @@
 {% block content %}
 
     <h1 class="kiosk-heading">Time In</h1>
-    <p class="kiosk-subtext">Look at the camera. The Capture button turns on once your face is clear.</p>
+    <p class="kiosk-subtext">Look straight at the camera. The Capture button turns on once your face is clear.</p>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -29,9 +29,40 @@
 
     <a href="{{ url_for('kiosk.home') }}" class="helper-link">Cancel</a>
 
+    <div id="processing-overlay" class="processing-overlay" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <span>Identifying you...</span>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     <script src="{{ url_for('static', filename='kiosk/js/camera.js') }}"></script>
     <script src="{{ url_for('static', filename='kiosk/js/face-detector.js') }}"></script>
     <script src="{{ url_for('static', filename='kiosk/js/verify.js') }}"></script>
+
+    <script>
+        // Page-only extras. verify.js is untouched.
+        (function () {
+            var overlay = document.getElementById('processing-overlay');
+
+            // Show feedback when Capture is pressed (verify.js still submits the form).
+            document.getElementById('capture-btn').addEventListener('click', function () {
+                overlay.classList.add('show');
+            });
+
+            // If the user comes back with the browser Back button, hide the overlay.
+            window.addEventListener('pageshow', function () {
+                overlay.classList.remove('show');
+            });
+
+            // Camera blocked or missing: tell the applicant instead of staying on "Starting camera..."
+            setTimeout(function () {
+                var video = document.getElementById('camera-video');
+                if (!video.srcObject) {
+                    var status = document.getElementById('face-status');
+                    status.textContent = 'Camera not available. Allow camera access or ask the exam staff for help.';
+                }
+            }, 6000);
+        })();
+    </script>
 
 {% endblock %}

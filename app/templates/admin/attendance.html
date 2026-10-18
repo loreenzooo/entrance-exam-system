@@ -44,8 +44,8 @@
                     <td>{{ record.applicant.full_name }}</td>
                     <td class="muted">{{ record.applicant.registration_number }}</td>
                     <td class="muted">{{ record.applicant.exam_batch_id }}</td>
-                    <td class="muted">{{ record.timed_in_at.strftime('%b %d, %Y %I:%M %p') }}</td>
-                    <td class="muted">{{ record.reference_number }}</td>
+                    <td class="muted">{{ record.timed_in_at.strftime('%b %d, %Y %I:%M %p') if record.timed_in_at else '—' }}</td>
+                    <td class="muted">{{ record.reference_number or '—' }}</td>
                     <td>{{ record.status }}</td>
                 </tr>
                 {% endfor %}

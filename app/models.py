@@ -138,8 +138,8 @@ class Attendance(db.Model):
     applicant_id = db.Column(db.Integer, db.ForeignKey('applicants.id'),
                              nullable=False, unique=True)
 
-    timed_in_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    status = db.Column(db.String(20), nullable=False, default='Present')  # always Present in v1.1
-    reference_number = db.Column(db.String(30), unique=True, nullable=False)
+    timed_in_at = db.Column(db.DateTime, nullable=True)       # empty for Absent
+    status = db.Column(db.String(20), nullable=False, default='Present')   # 'Present' or 'Absent'
+    reference_number = db.Column(db.String(30), unique=True, nullable=True)
 
     # The batch is reached through the applicant: attendance.applicant.exam_batch

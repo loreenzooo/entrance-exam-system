@@ -14,6 +14,7 @@ from flask_login import login_required, current_user
 
 from app.extensions import db
 from app.models import ExamBatch, Applicant, Attendance
+from app.services.attendance_service import mark_absent_for_ended_batches
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -138,11 +139,12 @@ def delete_batch(batch_id):
 
 def _attendance_query(batch_id):
     """Attendance rows, optionally filtered by the applicant's batch."""
+    mark_absent_for_ended_batches()
     query = Attendance.query.join(Applicant, Attendance.applicant_id == Applicant.id)
     if batch_id:
         query = query.filter(Applicant.exam_batch_id == batch_id)
-    return query.order_by(Attendance.timed_in_at.desc())
-
+    return query.order_by(Attendance.timed_in_at.desc().nulls_last(),
+                          Applicant.last_name)
 
 @admin_bp.route('/attendance')
 @login_required
@@ -176,14 +178,15 @@ def export_attendance():
     buffer = io.StringIO()
     writer = csv.writer(buffer)
     writer.writerow(['Full Name', 'Registration Number', 'Batch ID',
-                     'Time-In Timestamp', 'Reference Number'])
+                     'Time-In Timestamp', 'Reference Number', 'Status'])
     for r in records:
         writer.writerow([
             _csv_safe(r.applicant.full_name),
             r.applicant.registration_number,
             r.applicant.exam_batch_id,
-            r.timed_in_at.strftime('%Y-%m-%d %H:%M:%S'),
-            r.reference_number,
+            r.timed_in_at.strftime('%Y-%m-%d %H:%M:%S') if r.timed_in_at else '',
+            r.reference_number or '',
+            r.status,
         ])
 
     filename = f"attendance_batch_{batch_filter}.csv" if batch_filter else "attendance_all.csv"

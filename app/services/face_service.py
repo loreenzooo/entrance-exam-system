@@ -80,6 +80,20 @@ def find_duplicate(new_encoding, all_applicants, threshold=0.6):
 
     return None
 
+def find_best_match(new_encoding, all_applicants, threshold=0.5):
+    """Returns the CLOSEST applicant within the threshold, or None.
+    Used by Time In (1.2 Step 4). Register keeps using find_duplicate."""
+    candidates = [a for a in all_applicants if a.face_encoding]
+    if not candidates:
+        return None
+
+    stored = np.array([a.face_encoding for a in candidates])
+    distances = face_recognition.face_distance(stored, np.array(new_encoding))
+
+    best = int(np.argmin(distances))
+    if distances[best] <= threshold:
+        return candidates[best]
+    return None
 
 def verify_identity(applicant, live_image_data, threshold=0.6):
     """
