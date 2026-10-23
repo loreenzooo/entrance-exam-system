@@ -1,0 +1,64 @@
+{% extends "kiosk/base_kiosk.html" %}
+
+{#
+  Layout with the navy side panel on the left.
+
+  A page that uses it sets two things at the top of its own file:
+
+      {% set flow = 'register' %}    'register' (4 steps) or 'timein' (2 steps)
+      {% set step = 1 %}             current step number, or 'done' when finished
+
+  and puts its own CSS link inside {% block page_head %} (not {% block head %}).
+#}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/side-panel.css') }}">
+    {% block page_head %}{% endblock %}
+{% endblock %}
+
+{% block shell %}
+{% set step_names = {
+    'register': ['Face', 'Details', 'Batch', 'Confirmed'],
+    'timein': ['Scan', 'Checked in']
+} %}
+{% set current_flow = flow|default('register') %}
+{% set current_step = step|default(1) %}
+{% set all_done = (current_step == 'done') %}
+
+<div class="panel-layout">
+
+    <aside class="side-panel">
+        <div class="side-brand">
+            {# TODO: replace "School name" with your school's real name #}
+            Aquaman University
+            <small>Entrance exam kiosk</small>
+        </div>
+
+        <ol class="side-steps" aria-label="Progress">
+            {% for name in step_names[current_flow] %}
+                {% set n = loop.index %}
+                {% set is_done = all_done or n < current_step %}
+                <li class="side-step{% if is_done %} is-done{% elif n == current_step %} is-current{% endif %}"{% if n == current_step %} aria-current="step"{% endif %}>
+                    <span class="side-dot">
+                        {% if is_done %}
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l5 5l10 -10" /></svg>
+                        {% else %}
+                            {{ n }}
+                        {% endif %}
+                    </span>
+                    <span class="side-label">{{ name }}</span>
+                </li>
+            {% endfor %}
+        </ol>
+
+        <p class="side-help">Need help?<br>Ask the front desk.</p>
+    </aside>
+
+    <main class="panel-main">
+        <div class="panel-content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+</div>
+{% endblock %}

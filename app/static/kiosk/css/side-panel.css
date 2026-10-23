@@ -1,0 +1,169 @@
+/* ============================================
+   SIDE PANEL LAYOUT
+   Used by pages that extend base_kiosk_panel.html.
+   Uses the color and font variables from base.css.
+   ============================================ */
+
+.panel-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------- Navy panel ---------- */
+
+.side-panel {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 32px;
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.side-brand {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 48px;
+}
+
+.side-brand small {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: #AEB7CC;
+}
+
+.side-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.side-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 16px;
+    color: #8E9ABB;
+}
+
+.side-dot {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #5A6788;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.side-dot svg {
+    width: 18px;
+    height: 18px;
+}
+
+.side-step.is-current {
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+.side-step.is-current .side-dot {
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    color: var(--color-primary);
+}
+
+.side-step.is-done {
+    color: #D5DBEA;
+}
+
+.side-step.is-done .side-dot {
+    background: var(--color-success);
+    border-color: var(--color-success);
+    color: #FFFFFF;
+}
+
+.side-help {
+    margin: auto 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #8E9ABB;
+}
+
+/* ---------- Page content area ---------- */
+
+.panel-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    padding: 48px 56px;
+}
+
+.panel-content {
+    width: 100%;
+    max-width: 640px;
+}
+
+/* ---------- Narrow screens (portrait tablets): panel becomes a top bar ---------- */
+
+@media (max-width: 860px) {
+    .panel-layout {
+        flex-direction: column;
+    }
+
+    .side-panel {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    .side-brand {
+        margin-bottom: 0;
+        font-size: 17px;
+    }
+
+    .side-brand small {
+        display: none;
+    }
+
+    .side-steps {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .side-dot {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Only the current step keeps its text, so the bar stays on one line */
+    .side-step .side-label {
+        display: none;
+    }
+
+    .side-step.is-current .side-label {
+        display: inline;
+    }
+
+    .side-help {
+        display: none;
+    }
+
+    .panel-main {
+        padding: 28px 20px;
+    }
+}
