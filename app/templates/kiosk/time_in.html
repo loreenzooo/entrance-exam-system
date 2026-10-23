@@ -1,5 +1,7 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Time In - Exam Kiosk{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/camera.css') }}">
+{% endblock %}
 {% block content %}
 
     <h1 class="kiosk-heading">Time In</h1>

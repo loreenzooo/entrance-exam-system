@@ -1,5 +1,7 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Face Capture - Exam Kiosk{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/camera.css') }}">
+{% endblock %}
 {% block content %}
 
     <div class="step-track">
