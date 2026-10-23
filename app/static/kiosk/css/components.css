@@ -1,0 +1,125 @@
+/* ============================================
+   COMPONENTS - loaded on every kiosk page
+   Buttons, form fields, step indicator.
+   ============================================ */
+
+/* ---------- Buttons ---------- */
+
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-primary:hover { background: var(--color-primary-light); }
+.btn-primary:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+.btn-primary:disabled {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+/* When an <a> needs to look like btn-primary */
+.btn-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 24px;
+}
+
+.btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--color-bg);
+}
+
+/* Small text link, e.g. Cancel under the camera */
+.helper-link {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-top: 16px;
+}
+
+/* ---------- Form fields ---------- */
+
+.field {
+    margin-bottom: 20px;
+}
+
+.field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--color-text);
+}
+
+.field input,
+.field select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.field input:focus,
+.field select:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+}
+
+/* ---------- Step indicator ----------
+   Will be replaced by the side-panel step list during the redesign. */
+
+.step-track {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 36px;
+}
+
+.step-track .step {
+    flex: 1;
+    height: 3px;
+    background: var(--color-border);
+    border-radius: 2px;
+    position: relative;
+}
+
+.step-track .step.done,
+.step-track .step.active {
+    background: var(--color-primary);
+}
+
+.step-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-bottom: 28px;
+}
+
+.step-labels .current {
+    color: var(--color-primary);
+    font-weight: 600;
+}

@@ -1,0 +1,44 @@
+/* ============================================
+   CAMERA - used by verify.html and time_in.html
+   Live video frame and the face status message.
+   ============================================ */
+
+.camera-frame {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid var(--color-border);
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.camera-frame.frame-good {
+    border-color: var(--color-success);
+}
+
+.camera-frame.frame-warning {
+    border-color: var(--color-warning);
+}
+
+.camera-frame.frame-bad {
+    border-color: #A13A3A;
+}
+
+.camera-preview {
+    display: block;
+    width: 100%;
+    background: #000;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.face-status {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin: 0 0 20px;
+}
+
+.hidden-canvas {
+    display: none;
+}

@@ -1,0 +1,51 @@
+/* ============================================
+   REGISTER - used by register.html
+   Name rows and the biometric consent box.
+   ============================================ */
+
+/* Two fields side by side (last name + suffix) */
+.field-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+
+.field .optional {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+/* Biometric consent notice */
+.consent-box {
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.consent-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0 0 12px;
+}
+
+.consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.consent-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+}

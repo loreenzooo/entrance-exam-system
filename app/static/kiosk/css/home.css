@@ -1,0 +1,145 @@
+/* ============================================
+   HOME SCREEN
+   Loaded only by home.html, after kiosk.css, so it can use
+   the color and font variables defined there.
+   ============================================ */
+
+.home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 56px;
+}
+
+.home-brand {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-primary);
+}
+
+.home-brand small {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.home-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.home-heading {
+    font-family: var(--font-display);
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-primary);
+    margin: 0 0 8px;
+}
+
+.home-sub {
+    font-size: 18px;
+    color: var(--color-text-muted);
+    margin: 0 0 36px;
+}
+
+.home-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.home-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 260px;
+    padding: 36px 32px;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.home-tile:active {
+    transform: scale(0.99);
+}
+
+.home-tile:focus-visible {
+    outline: 3px solid var(--color-warning);
+    outline-offset: 3px;
+}
+
+.home-tile-primary {
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.home-tile-primary:hover {
+    background: var(--color-primary-light);
+}
+
+.home-tile-secondary {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.home-tile-secondary:hover {
+    background: var(--color-bg);
+}
+
+.home-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: auto;
+}
+
+.home-tile-title {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.home-tile-desc {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.home-tile-primary .home-tile-desc {
+    color: #C9D1E4;
+}
+
+.home-tile-secondary .home-tile-desc {
+    color: var(--color-text-muted);
+}
+
+.home-help {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: var(--color-text-muted);
+}
+
+.home-help svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 720px) {
+    .home { padding: 24px; }
+    .home-tiles { grid-template-columns: 1fr; }
+    .home-tile { min-height: 180px; padding: 28px 24px; }
+    .home-heading { font-size: 34px; }
+}

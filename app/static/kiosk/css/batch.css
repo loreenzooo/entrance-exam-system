@@ -1,0 +1,39 @@
+/* ============================================
+   BATCH SELECTION - used by select_batch.html
+   ============================================ */
+
+.batch-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.batch-option:hover {
+    border-color: var(--color-primary);
+}
+
+.batch-option input[type="radio"] {
+    margin-top: 4px;
+    width: auto;
+}
+
+.batch-option-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.batch-option-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.batch-option-meta {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}

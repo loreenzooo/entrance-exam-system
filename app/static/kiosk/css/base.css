@@ -1,0 +1,87 @@
+/* ============================================
+   BASE - loaded on every kiosk page
+   Variables, reset, page shell, headings.
+   Everything else builds on the variables below.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --color-primary: #1E2A4A;
+    --color-primary-light: #2C3D66;
+    --color-bg: #F6F7F9;
+    --color-surface: #FFFFFF;
+    --color-text: #1A1D24;
+    --color-text-muted: #5B6472;
+    --color-success: #2E7D6B;
+    --color-warning: #C97A2B;
+    --color-border: #E2E5EA;
+
+    --font-display: 'Source Serif 4', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.kiosk-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+}
+
+.kiosk-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 48px 40px;
+    max-width: 480px;
+    width: 100%;
+}
+
+.kiosk-heading {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--color-primary);
+}
+
+.kiosk-subtext {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 0 32px;
+}
+
+.helper-text {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Flash messages (errors shown via Flask's flash()) */
+.flash-error {
+    background: #FBEAEA;
+    color: #A13A3A;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 480px) {
+    .kiosk-card { padding: 32px 24px; }
+    .kiosk-heading { font-size: 24px; }
+}

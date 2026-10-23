@@ -1,0 +1,45 @@
+/* ============================================
+   CONFIRMATION - used by confirmation.html
+   (and time_in_result.html if it shows these elements)
+   Reference number box and the details list.
+   ============================================ */
+
+.confirmation-box {
+    background: var(--color-bg);
+    border: 1.5px dashed var(--color-border);
+    border-radius: 4px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.confirmation-label {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+.confirmation-ref {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--color-primary);
+    letter-spacing: 0.5px;
+}
+
+/* Details list */
+.confirmation-details {
+    margin: 0 0 8px;
+}
+
+.confirmation-details div {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+}
+
+.confirmation-details dt { color: var(--color-text-muted); }
+.confirmation-details dd { margin: 0; font-weight: 500; text-align: right; }
