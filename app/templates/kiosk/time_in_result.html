@@ -1,5 +1,13 @@
-{% extends "kiosk/base_kiosk.html" %}
+{% extends "kiosk/base_kiosk_panel.html" %}
+{% set flow = 'timein' %}
+{% set step = 'done' %}
+
 {% block title %}Time In - Exam Kiosk{% endblock %}
+
+{% block page_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/confirmation.css') }}">
+{% endblock %}
+
 {% block content %}
 
     {% if already %}

@@ -1,19 +1,14 @@
-{% extends "kiosk/base_kiosk.html" %}
-{% block title %}Your Details - Exam Kiosk{% endblock %}
-{% block content %}
+{% extends "kiosk/base_kiosk_panel.html" %}
+{% set flow = 'register' %}
+{% set step = 2 %}
 
-    <div class="step-track">
-        <div class="step done"></div>
-        <div class="step active"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-    </div>
-    <div class="step-labels">
-        <span>1. Face</span>
-        <span class="current">2. Details</span>
-        <span>3. Batch</span>
-        <span>4. Confirmed</span>
-    </div>
+{% block title %}Your Details - Exam Kiosk{% endblock %}
+
+{% block page_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/register.css') }}">
+{% endblock %}
+
+{% block content %}
 
     <h1 class="kiosk-heading">Applicant Registration</h1>
     <p class="kiosk-subtext">Your face was captured. Now enter your details.</p>
