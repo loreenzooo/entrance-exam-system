@@ -68,6 +68,9 @@ body {
 }
 
 .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: rgba(255,255,255,0.82);
     text-decoration: none;
     padding: 11px 14px;
@@ -75,6 +78,12 @@ body {
     font-size: 14px;
     font-weight: 500;
     transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar a svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .sidebar a:hover,
@@ -153,13 +162,135 @@ body {
 }
 
 /* ---------- Login page (standalone, no sidebar) ---------- */
+/* REPLACE the existing "Login page" block in admin.css with this one.
+   Also delete this older line further down (in the Buttons section):
+       .login-card .btn-primary { width: 100%; padding: 13px; }
+   (this block sets the login button size instead). */
 
 .login-shell {
     min-height: 100vh;
+    display: grid;
+    grid-template-columns: 41% 1fr;
+    background: var(--color-bg);
+}
+
+/* ----- Left brand panel ----- */
+
+.login-brand {
+    position: relative;
+    overflow: hidden;
+    min-height: max(100vh, 740px);
+    padding: 63px 60px 56px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+.brand-row svg { width: 24px; height: 24px; flex-shrink: 0; }
+
+.brand-face {
+    width: 126px;
+    height: 126px;
+    margin: 32px 0 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    display: grid;
+    place-items: center;
+}
+
+.brand-face span {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--color-primary);
+    display: grid;
+    place-items: center;
+}
+
+.brand-face svg { width: 48px; height: 48px; }
+
+.brand-headline {
+    margin: 29px 0 0;
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.brand-text {
+    max-width: 360px;
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.brand-note {
+    margin: auto 0 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Floating tiles */
+.tile {
+    --rot: 0deg;   /* resting tilt, set per tile below */
+    --dx: 0px;     /* sideways drift */
+    --dy: -12px;   /* how far it floats up */
+
+    position: absolute;
+    display: grid;
+    place-items: center;
+    background: #3A4664;
+    border: 1px solid #4B5879;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+    color: #fff;
+    transform: rotate(var(--rot));
+    animation: tile-float 6s ease-in-out infinite;
+    will-change: transform;
+}
+
+@keyframes tile-float {
+    0%, 100% { transform: translate(0, 0) rotate(var(--rot)); }
+    50%      { transform: translate(var(--dx), var(--dy)) rotate(calc(var(--rot) + 4deg)); }
+}
+
+/* Each tile has its own speed, delay and drift so they never move in sync */
+.tile-clipboard { width: 68px; height: 68px; border-radius: 18px; right: 57px;  top: 106px;    --rot: 8deg;  --dx: 6px;  --dy: -14px; animation-duration: 6.5s; }
+.tile-shield    { width: 55px; height: 55px; border-radius: 14px; right: 135px; top: 179px;    --rot: -9deg; --dx: -5px; --dy: -10px; animation-duration: 5s;   animation-delay: -1.5s; }
+.tile-calendar  { width: 62px; height: 62px; border-radius: 16px; left: 58px;   bottom: 127px; --rot: -6deg; --dx: 5px;  --dy: -12px; animation-duration: 7s;   animation-delay: -3s; }
+.tile-user      { width: 74px; height: 74px; border-radius: 19px; left: 182px;  bottom: 78px;  --rot: 6deg;  --dx: -6px; --dy: -16px; animation-duration: 5.5s; animation-delay: -2s; }
+.tile-check     { width: 60px; height: 60px; border-radius: 16px; right: 65px;  bottom: 125px; --rot: -5deg; --dx: 4px;  --dy: -11px; animation-duration: 6s;   animation-delay: -4s; }
+
+.tile-clipboard svg { width: 30px; height: 30px; }
+.tile-shield svg    { width: 24px; height: 24px; }
+.tile-calendar svg  { width: 27px; height: 27px; }
+.tile-user svg      { width: 32px; height: 32px; }
+.tile-check svg     { width: 26px; height: 26px; }
+
+/* Respect users who turn off motion in their OS settings */
+@media (prefers-reduced-motion: reduce) {
+    .tile { animation: none; }
+}
+
+/* ----- Right side ----- */
+
+.login-main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-bg);
     padding: 24px;
 }
 
@@ -175,9 +306,56 @@ body {
 
 .login-card h1 {
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
     color: var(--color-primary);
-    margin: 0 0 28px;
+    margin: 0 0 8px;
+}
+
+.login-subtext {
+    margin: 0 0 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+/* Error message with icon */
+.login-card .flash-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 14px;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.login-card .flash-error svg {
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.login-card .field label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.login-card .field input { padding: 12px 14px; }
+.login-card .field input::placeholder { color: #7A8392; }
+
+.login-card form .btn-primary {
+    width: 100%;
+    height: 42px;
+    padding: 0;
+}
+
+/* Small screens: hide the brand panel, show only the form */
+@media (max-width: 900px) {
+    .login-shell { grid-template-columns: 1fr; }
+    .login-brand { display: none; }
 }
 
 /* ---------- Form fields ---------- */
@@ -364,6 +542,14 @@ body {
     height: 16px;
     color: var(--color-text-muted);
     pointer-events: none;
+}
+
+/* Record counter at the end of a toolbar */
+.result-count {
+    margin-left: auto;
+    align-self: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
 }
 
 /* ---------- Data tables ---------- */
