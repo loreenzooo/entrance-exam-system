@@ -1,11 +1,56 @@
 {% extends "kiosk/base_kiosk.html" %}
 {% block title %}Exam Kiosk{% endblock %}
-{% block content %}
 
-    <h1 class="kiosk-heading">Entrance Exam Kiosk</h1>
-    <p class="kiosk-subtext">New here? Register first. Already registered and it's exam day? Time In.</p>
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/home.css') }}">
+{% endblock %}
 
-    <a href="{{ url_for('kiosk.verify') }}" class="btn-primary btn-link">Register</a>
-    <a href="{{ url_for('kiosk.time_in') }}" class="btn-primary btn-link btn-secondary">Time In</a>
+{% block shell %}
+<main class="home">
 
+    <header class="home-brand">
+        {# TODO: replace "School name" with your school's real name #}
+        Aquaman University
+        <small>Entrance exam kiosk</small>
+    </header>
+
+    <section class="home-body">
+        <h1 class="home-heading">Welcome</h1>
+        <p class="home-sub">Choose what you're here to do.</p>
+
+        <div class="home-tiles">
+
+            <a href="{{ url_for('kiosk.verify') }}" class="home-tile home-tile-primary">
+                <img class="home-icon" src="{{ url_for('static', filename='kiosk/img/user-round-plus.png') }}" alt="">
+                <span class="home-tile-title">Register</span>
+                <span class="home-tile-desc">First time here. Takes about three minutes.</span>
+            </a>
+
+            <a href="{{ url_for('kiosk.time_in') }}" class="home-tile home-tile-secondary">
+                <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                    <path d="M9 10l.01 0" />
+                    <path d="M15 10l.01 0" />
+                    <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                </svg>
+                <span class="home-tile-title">Time in</span>
+                <span class="home-tile-desc">Already registered and it's exam day. Scan your face to check in.</span>
+            </a>
+
+        </div>
+    </section>
+
+    <footer class="home-help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+            <path d="M12 17v.01" />
+            <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
+        </svg>
+        Need help? Ask the front desk.
+    </footer>
+
+</main>
 {% endblock %}
