@@ -8,49 +8,113 @@
 {% block shell %}
 <main class="home">
 
-    <header class="home-brand">
-        {# TODO: replace "School name" with your school's real name #}
-        Aquaman University
-        <small>Entrance exam kiosk</small>
-    </header>
+    <section class="home-hero">
 
-    <section class="home-body">
+        <div class="home-brand">
+            {# TODO: replace "School name" with your school's real name #}
+            Aquaman University
+            <small>Entrance exam kiosk</small>
+        </div>
+
+        <div class="home-art">
+            <svg viewBox="0 0 200 200" fill="none" aria-hidden="true" focusable="false">
+                <circle cx="100" cy="100" r="94" stroke="#2C3D66" stroke-width="1.5" />
+                <circle cx="100" cy="100" r="74" stroke="#34476F" stroke-width="1.5" />
+                <circle cx="100" cy="100" r="54" fill="#26365C" stroke="#3D5280" stroke-width="1.5" />
+                <path d="M58 82v-16a8 8 0 0 1 8 -8h16" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M142 82v-16a8 8 0 0 0 -8 -8h-16" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M58 118v16a8 8 0 0 0 8 8h16" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M142 118v16a8 8 0 0 1 -8 8h-16" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+                <ellipse cx="100" cy="100" rx="24" ry="31" stroke="#C9D1E4" stroke-width="2.5" />
+                <circle cx="91" cy="94" r="2.5" fill="#C9D1E4" />
+                <circle cx="109" cy="94" r="2.5" fill="#C9D1E4" />
+                <path d="M92 109a10 10 0 0 0 16 0" stroke="#C9D1E4" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M64 100h72" stroke="#5BB89E" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+        </div>
+
         <h1 class="home-heading">Welcome</h1>
-        <p class="home-sub">Choose what you're here to do.</p>
+        <p class="home-tagline">Face-verified registration and check-in for the entrance exam.</p>
 
-        <div class="home-tiles">
-
-            <a href="{{ url_for('kiosk.verify') }}" class="home-tile home-tile-primary">
-                <img class="home-icon" src="{{ url_for('static', filename='kiosk/img/user-round-plus.png') }}" alt="">
-                <span class="home-tile-title">Register</span>
-                <span class="home-tile-desc">First time here. Takes about three minutes.</span>
-            </a>
-
-            <a href="{{ url_for('kiosk.time_in') }}" class="home-tile home-tile-secondary">
-                <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                    <path d="M9 10l.01 0" />
-                    <path d="M15 10l.01 0" />
-                    <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+        <ul class="home-chips">
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06" />
+                    <path d="M15 19l2 2l4 -4" />
                 </svg>
-                <span class="home-tile-title">Time in</span>
-                <span class="home-tile-desc">Already registered and it's exam day. Scan your face to check in.</span>
+                Your photo isn't stored
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                    <path d="M12 7v5l3 3" />
+                </svg>
+                About 3 minutes
+            </li>
+        </ul>
+
+    </section>
+
+    <section class="home-actions">
+        <div class="home-actions-inner">
+
+            <h2 class="home-question">What would you like to do?</h2>
+            <p class="home-hint">Tap one to begin.</p>
+
+            <a href="{{ url_for('kiosk.verify') }}" class="home-action home-action-primary">
+                <span class="home-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M16 19h6" />
+                        <path d="M19 16v6" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+                    </svg>
+                </span>
+                <span class="home-action-text">
+                    <span class="home-action-title">Register</span>
+                    <span class="home-action-desc">First time here. Takes about three minutes.</span>
+                </span>
+                <svg class="home-action-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M5 12l14 0" />
+                    <path d="M13 18l6 -6" />
+                    <path d="M13 6l6 6" />
+                </svg>
             </a>
+
+            <a href="{{ url_for('kiosk.time_in') }}" class="home-action home-action-secondary">
+                <span class="home-action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                        <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                        <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                        <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                        <path d="M9 10l.01 0" />
+                        <path d="M15 10l.01 0" />
+                        <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                    </svg>
+                </span>
+                <span class="home-action-text">
+                    <span class="home-action-title">Time in</span>
+                    <span class="home-action-desc">Already registered and it's exam day. Scan your face to check in.</span>
+                </span>
+                <svg class="home-action-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M5 12l14 0" />
+                    <path d="M13 18l6 -6" />
+                    <path d="M13 6l6 6" />
+                </svg>
+            </a>
+
+            <p class="home-help">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M12 17v.01" />
+                    <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
+                </svg>
+                Need help? Ask the front desk.
+            </p>
 
         </div>
     </section>
-
-    <footer class="home-help">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-            <path d="M12 17v.01" />
-            <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
-        </svg>
-        Need help? Ask the front desk.
-    </footer>
 
 </main>
 {% endblock %}

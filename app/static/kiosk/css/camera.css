@@ -4,10 +4,10 @@
    ============================================ */
 
 .camera-frame {
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     border: 3px solid var(--color-border);
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     transition: border-color 0.2s ease;
 }
 
@@ -23,21 +23,42 @@
     border-color: #A13A3A;
 }
 
+/* max-height keeps the whole page on one screen on shorter displays.
+   Only the on-screen preview is cropped; the captured photo is not. */
 .camera-preview {
     display: block;
     width: 100%;
-    background: #000;
     aspect-ratio: 4 / 3;
+    max-height: 52vh;
     object-fit: cover;
+    background: #000;
 }
 
+/* The status line is the key instruction, so it is larger than body text
+   and takes its color from the frame beside it. */
 .face-status {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--color-text-muted);
-    margin: 0 0 20px;
 }
+
+.face-status::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.camera-frame.frame-good + .face-status { color: var(--color-success); }
+.camera-frame.frame-warning + .face-status { color: #9A5B14; }
+.camera-frame.frame-bad + .face-status { color: #A13A3A; }
 
 .hidden-canvas {
     display: none;

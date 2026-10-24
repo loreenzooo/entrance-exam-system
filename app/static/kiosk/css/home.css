@@ -1,145 +1,247 @@
 /* ============================================
-   HOME SCREEN
-   Loaded only by home.html, after kiosk.css, so it can use
+   HOME SCREEN - full-screen split layout
+   Loaded only by home.html, after base.css, so it can use
    the color and font variables defined there.
+   Sizes use clamp() so the screen scales from a tablet to a
+   full HD kiosk without separate rules.
    ============================================ */
 
 .home {
+    display: flex;
     min-height: 100vh;
+}
+
+/* ---------- Left: navy hero ---------- */
+
+.home-hero {
+    flex: 1.15;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 32px 56px;
+    padding: clamp(28px, 4vw, 64px);
+    background: var(--color-primary);
+    color: #FFFFFF;
 }
 
 .home-brand {
     font-family: var(--font-display);
-    font-size: 20px;
+    font-size: clamp(20px, 1.6vw, 28px);
     font-weight: 500;
     line-height: 1.3;
-    color: var(--color-primary);
 }
 
 .home-brand small {
     display: block;
     margin-top: 4px;
     font-family: var(--font-body);
-    font-size: 13px;
+    font-size: clamp(13px, 1vw, 16px);
     font-weight: 400;
-    color: var(--color-text-muted);
+    color: #AEB7CC;
 }
 
-.home-body {
-    flex: 1;
+.home-art {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
+    margin: auto 0 clamp(12px, 2vh, 28px);
+}
+
+.home-art svg {
+    width: clamp(200px, 24vw, 380px);
+    height: auto;
 }
 
 .home-heading {
     font-family: var(--font-display);
-    font-size: 44px;
+    font-size: clamp(40px, 4.4vw, 72px);
     font-weight: 500;
-    line-height: 1.15;
-    color: var(--color-primary);
-    margin: 0 0 8px;
+    line-height: 1.1;
+    margin: 0 0 12px;
 }
 
-.home-sub {
-    font-size: 18px;
-    color: var(--color-text-muted);
-    margin: 0 0 36px;
+.home-tagline {
+    max-width: 30em;
+    font-size: clamp(16px, 1.3vw, 22px);
+    line-height: 1.5;
+    color: #C9D1E4;
+    margin: 0 0 24px;
 }
 
-.home-tiles {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
-
-.home-tile {
+.home-chips {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
-    min-height: 260px;
-    padding: 36px 32px;
-    border-radius: 14px;
-    text-decoration: none;
-    transition: background 0.15s ease, transform 0.1s ease;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.home-tile:active {
+.home-chips li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--color-primary-light);
+    color: #D5DBEA;
+    font-size: clamp(13px, 1vw, 16px);
+}
+
+.home-chips svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ---------- Right: actions ---------- */
+
+.home-actions {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 4vw, 64px);
+    background: var(--color-bg);
+}
+
+.home-actions-inner {
+    width: 100%;
+    max-width: 560px;
+}
+
+.home-question {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 2.4vw, 40px);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-primary);
+    margin: 0 0 6px;
+}
+
+.home-hint {
+    font-size: clamp(15px, 1.2vw, 19px);
+    color: var(--color-text-muted);
+    margin: 0 0 28px;
+}
+
+.home-action {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+    padding: clamp(20px, 2.2vw, 30px);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.home-action-primary {
+    border-color: var(--color-primary);
+    background: #EEF1F7;
+}
+
+.home-action:hover {
+    border-color: var(--color-primary);
+}
+
+.home-action:active {
     transform: scale(0.99);
 }
 
-.home-tile:focus-visible {
+.home-action:focus-visible {
     outline: 3px solid var(--color-warning);
     outline-offset: 3px;
 }
 
-.home-tile-primary {
+.home-action-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(56px, 4.4vw, 76px);
+    height: clamp(56px, 4.4vw, 76px);
+    border-radius: 50%;
     background: var(--color-primary);
     color: #FFFFFF;
 }
 
-.home-tile-primary:hover {
-    background: var(--color-primary-light);
-}
-
-.home-tile-secondary {
+.home-action-secondary .home-action-icon {
     background: var(--color-surface);
     color: var(--color-primary);
     border: 2px solid var(--color-primary);
 }
 
-.home-tile-secondary:hover {
-    background: var(--color-bg);
+.home-action-icon svg {
+    width: 50%;
+    height: 50%;
 }
 
-.home-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: auto;
+.home-action-text {
+    flex: 1;
+    min-width: 0;
 }
 
-.home-tile-title {
+.home-action-title {
+    display: block;
     font-family: var(--font-display);
-    font-size: 30px;
+    font-size: clamp(24px, 2vw, 34px);
     font-weight: 500;
-    line-height: 1.2;
+    color: var(--color-primary);
 }
 
-.home-tile-desc {
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-.home-tile-primary .home-tile-desc {
-    color: #C9D1E4;
-}
-
-.home-tile-secondary .home-tile-desc {
+.home-action-desc {
+    display: block;
+    margin-top: 4px;
+    font-size: clamp(14px, 1.1vw, 18px);
+    line-height: 1.4;
     color: var(--color-text-muted);
+}
+
+.home-action-go {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    color: var(--color-primary);
 }
 
 .home-help {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 15px;
+    margin: 24px 0 0;
+    font-size: clamp(14px, 1vw, 16px);
     color: var(--color-text-muted);
 }
 
 .home-help svg {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
-@media (max-width: 720px) {
-    .home { padding: 24px; }
-    .home-tiles { grid-template-columns: 1fr; }
-    .home-tile { min-height: 180px; padding: 28px 24px; }
-    .home-heading { font-size: 34px; }
+/* ---------- Narrow screens (portrait tablets): stack the two halves ---------- */
+
+@media (max-width: 860px) {
+    .home {
+        flex-direction: column;
+    }
+
+    .home-hero {
+        padding: 28px 24px;
+    }
+
+    .home-art {
+        margin: 20px 0;
+    }
+
+    .home-art svg {
+        width: 160px;
+    }
+
+    .home-actions {
+        padding: 28px 24px;
+    }
 }

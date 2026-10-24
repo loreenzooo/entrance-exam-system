@@ -22,14 +22,16 @@
     {% endwith %}
 
     <form method="POST" action="{{ url_for('kiosk.register') }}">
-        <div class="field">
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" value="{{ form.first_name or '' }}" required>
-        </div>
 
-        <div class="field">
-            <label for="middle_name">Middle Name <span class="optional">(optional)</span></label>
-            <input type="text" id="middle_name" name="middle_name" value="{{ form.middle_name or '' }}">
+        <div class="field-row field-row-even">
+            <div class="field">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" value="{{ form.first_name or '' }}" required>
+            </div>
+            <div class="field">
+                <label for="middle_name">Middle Name <span class="optional">(optional)</span></label>
+                <input type="text" id="middle_name" name="middle_name" value="{{ form.middle_name or '' }}">
+            </div>
         </div>
 
         <div class="field-row">
@@ -43,14 +45,15 @@
             </div>
         </div>
 
-        <div class="field">
-            <label for="contact_number">Contact Number</label>
-            <input type="tel" id="contact_number" name="contact_number" value="{{ form.contact_number or '' }}" required>
-        </div>
-
-        <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="{{ form.email or '' }}" required>
+        <div class="field-row field-row-even">
+            <div class="field">
+                <label for="contact_number">Contact Number</label>
+                <input type="tel" id="contact_number" name="contact_number" value="{{ form.contact_number or '' }}" required>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ form.email or '' }}" required>
+            </div>
         </div>
 
         <div class="field">

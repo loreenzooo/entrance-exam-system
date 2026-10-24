@@ -2,6 +2,8 @@
    SIDE PANEL LAYOUT
    Used by pages that extend base_kiosk_panel.html.
    Uses the color and font variables from base.css.
+
+   Spacing scale (multiples of 8px): 8, 16, 24, 32, 48
    ============================================ */
 
 .panel-layout {
@@ -9,10 +11,14 @@
     min-height: 100vh;
 }
 
-/* ---------- Navy panel ---------- */
+/* ---------- Navy panel (stays in place while the page scrolls) ---------- */
 
 .side-panel {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
     width: 280px;
+    height: 100vh;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -100,19 +106,48 @@
     color: #8E9ABB;
 }
 
-/* ---------- Page content area ---------- */
+/* ---------- Page content area ----------
+   .panel-main is a flex box and .panel-content has margin: auto, so:
+   - short pages are centered both ways
+   - long pages start at the top and scroll (auto margins shrink to 0),
+     so nothing is ever cut off. */
 
 .panel-main {
     flex: 1;
     min-width: 0;
     display: flex;
-    justify-content: center;
-    padding: 48px 56px;
+    padding: clamp(32px, 5vh, 64px) clamp(32px, 5vw, 80px);
 }
 
 .panel-content {
     width: 100%;
     max-width: 640px;
+    margin: auto;
+}
+
+/* ---------- Page header: heading, intro, then 32px before the content ---------- */
+
+.panel-content .kiosk-heading {
+    font-size: clamp(28px, 2.2vw, 36px);
+    line-height: 1.2;
+    margin: 0 0 8px;
+}
+
+.panel-content .kiosk-subtext {
+    max-width: 36em;
+    font-size: clamp(16px, 1.15vw, 18px);
+    line-height: 1.5;
+    margin: 0 0 32px;
+}
+
+.panel-content .btn-primary {
+    padding: 18px 16px;
+    font-size: 17px;
+    border-radius: 8px;
+}
+
+.panel-content .helper-text {
+    margin-top: 24px;
 }
 
 /* ---------- Narrow screens (portrait tablets): panel becomes a top bar ---------- */
@@ -123,7 +158,10 @@
     }
 
     .side-panel {
+        z-index: 10;
         width: 100%;
+        height: auto;
+        align-self: stretch;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;

@@ -21,26 +21,45 @@
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('kiosk.select_batch') }}">
-        {% if batches %}
-            {% for batch in batches %}
-                <label class="batch-option">
-                    <input type="radio" name="exam_batch_id" value="{{ batch.id }}" required>
-                    <div class="batch-option-details">
-                        <span class="batch-option-name">Batch {{ batch.id }}</span>
-                        <span class="batch-option-meta">
-                            {{ batch.exam_date.strftime('%b %d, %Y') }}
-                            · {{ batch.start_time.strftime('%I:%M %p') }} - {{ batch.end_time.strftime('%I:%M %p') }}
+    {% if batches %}
+        <form method="POST" action="{{ url_for('kiosk.select_batch') }}">
+
+            <div class="batch-list">
+                {% for batch in batches %}
+                    {% set seats_left = batch.capacity - batch.reserved_seats %}
+                    <label class="batch-option{% if seats_left <= 5 %} batch-option-low{% endif %}">
+                        <input type="radio" name="exam_batch_id" value="{{ batch.id }}" required>
+                        <span class="batch-option-details">
+                            <span class="batch-option-name">Batch {{ batch.id }}</span>
+                            <span class="batch-option-meta">
+                                {{ batch.exam_date.strftime('%b %d, %Y') }}
+                                · {{ batch.start_time.strftime('%I:%M %p') }} - {{ batch.end_time.strftime('%I:%M %p') }}
+                            </span>
+                            <span class="batch-option-meta">{{ batch.building }}, Room {{ batch.room }}</span>
+                            <progress class="seat-meter" value="{{ batch.reserved_seats }}" max="{{ batch.capacity }}"></progress>
+                            <span class="seat-meter-label">{{ batch.reserved_seats }} / {{ batch.capacity }} seats reserved</span>
                         </span>
-                        <span class="batch-option-meta">{{ batch.building }}, Room {{ batch.room }}</span>
-                        <span class="batch-option-meta">{{ batch.reserved_seats }} / {{ batch.capacity }} seats reserved</span>
-                    </div>
-                </label>
-            {% endfor %}
+                        <span class="seat-tag">{{ seats_left }} {{ 'seat' if seats_left == 1 else 'seats' }} left</span>
+                    </label>
+                {% endfor %}
+            </div>
+
             <button type="submit" class="btn-primary">Reserve My Seat</button>
-        {% else %}
-            <p class="helper-text">No exam batches are currently open. Please check back later or ask the front desk.</p>
-        {% endif %}
-    </form>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M4 11h16" />
+                </svg>
+            </div>
+            <h2 class="empty-state-title">No exam batches are open right now</h2>
+            <p class="empty-state-text">Please check back later or ask the front desk.</p>
+            <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-secondary btn-link">Back to start</a>
+        </div>
+    {% endif %}
 
 {% endblock %}

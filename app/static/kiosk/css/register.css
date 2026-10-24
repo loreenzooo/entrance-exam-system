@@ -1,13 +1,18 @@
 /* ============================================
    REGISTER - used by register.html
-   Name rows and the biometric consent box.
+   Field rows and the biometric consent box.
    ============================================ */
 
-/* Two fields side by side (last name + suffix) */
+/* Two fields side by side. Default: wide + narrow (last name + suffix). */
 .field-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 12px;
+    gap: 16px;
+}
+
+/* Modifier: two equal columns (first + middle name, contact + email) */
+.field-row-even {
+    grid-template-columns: 1fr 1fr;
 }
 
 .field .optional {
@@ -19,33 +24,35 @@
 .consent-box {
     background: var(--color-bg);
     border: 1.5px solid var(--color-border);
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
 }
 
 .consent-text {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.5;
     color: var(--color-text-muted);
-    margin: 0 0 12px;
+    margin: 0 0 16px;
 }
 
 .consent-check {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
+    gap: 12px;
+    font-size: 15px;
     cursor: pointer;
 }
 
+/* Larger checkbox so it is easy to tap on a touchscreen */
 .consent-check input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-top: 2px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
     flex-shrink: 0;
 }
 
 @media (max-width: 480px) {
-    .field-row { grid-template-columns: 1fr; }
+    .field-row,
+    .field-row-even { grid-template-columns: 1fr; }
 }
