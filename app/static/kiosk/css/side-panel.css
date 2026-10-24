@@ -99,13 +99,6 @@
     color: #FFFFFF;
 }
 
-.side-help {
-    margin: auto 0 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #8E9ABB;
-}
-
 /* ---------- Page content area ----------
    .panel-main is a flex box and .panel-content has margin: auto, so:
    - short pages are centered both ways
@@ -195,10 +188,6 @@
 
     .side-step.is-current .side-label {
         display: inline;
-    }
-
-    .side-help {
-        display: none;
     }
 
     .panel-main {

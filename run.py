@@ -1,7 +1,7 @@
 import mimetypes
 mimetypes.add_type('text/css', '.css')
 mimetypes.add_type('application/javascript', '.js')
-from flask import Flask
+from flask import Flask, redirect, url_for
 from dotenv import load_dotenv
 import os
 
@@ -41,6 +41,11 @@ app.register_blueprint(admin_bp, url_prefix='/admin')
 # 6. Register the kiosk blueprint (public, no login - this IS the home page now)
 from app.kiosk.routes import kiosk_bp
 app.register_blueprint(kiosk_bp, url_prefix='/kiosk')
+
+# The kiosk is the front door: "/" used to be a 404.
+@app.route('/')
+def index():
+    return redirect(url_for('kiosk.home'))
 
 # 7. Create the tables based on your models.py blueprints
 with app.app_context():

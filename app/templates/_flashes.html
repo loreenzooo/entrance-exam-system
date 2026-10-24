@@ -1,0 +1,7 @@
+{# One place for flashed messages, shared by the kiosk and admin layouts.
+   Routes pass 'success' or 'error' as the category. #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-{{ 'success' if category == 'success' else 'error' }}" role="status">{{ message }}</div>
+    {% endfor %}
+{% endwith %}

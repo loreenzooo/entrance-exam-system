@@ -2,7 +2,7 @@
 {% set flow = 'register' %}
 {% set step = 2 %}
 
-{% block title %}Your Details - Exam Kiosk{% endblock %}
+{% block title %}Your Details - Entrance Exam Kiosk{% endblock %}
 
 {% block page_head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/register.css') }}">
@@ -12,14 +12,6 @@
 
     <h1 class="kiosk-heading">Applicant Registration</h1>
     <p class="kiosk-subtext">Your face was captured. Now enter your details.</p>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="flash-error">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
     <form method="POST" action="{{ url_for('kiosk.register') }}">
 
@@ -48,11 +40,17 @@
         <div class="field-row field-row-even">
             <div class="field">
                 <label for="contact_number">Contact Number</label>
-                <input type="tel" id="contact_number" name="contact_number" value="{{ form.contact_number or '' }}" required>
+                <input type="tel" id="contact_number" name="contact_number"
+                       value="{{ form.contact_number or '' }}"
+                       placeholder="09XXXXXXXXX" inputmode="numeric" autocomplete="tel"
+                       pattern="09[0-9]{9}" minlength="11" maxlength="11"
+                       title="An 11-digit mobile number starting with 09"
+                       required>
             </div>
             <div class="field">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ form.email or '' }}" required>
+                <input type="email" id="email" name="email" value="{{ form.email or '' }}"
+                       placeholder="name@example.com" autocomplete="email" required>
             </div>
         </div>
 
@@ -63,17 +61,57 @@
 
         <div class="consent-box">
             <p class="consent-text">
-                <strong>Biometric consent.</strong> We store a numeric template of your face to check for
-                duplicate registrations and to record your attendance on exam day.
-                Your photo is not kept.
+                <strong>Biometric consent.</strong> We store a numeric template of your face - not your
+                photo - to check for duplicate registrations and to record your attendance on exam day.
             </p>
+
+            <button type="button" class="consent-link" id="open-consent">
+                Read the full biometric consent notice
+            </button>
+
             <label class="consent-check">
-                <input type="checkbox" name="biometric_consent" value="yes" required>
+                <input type="checkbox" name="biometric_consent" value="yes"
+                       id="consent-check" required>
                 <span>I have read and accept the biometric consent notice.</span>
             </label>
+
+            <p class="consent-hint" id="consent-hint">Read the notice above to enable this box.</p>
         </div>
 
         <button type="submit" class="btn-primary">Continue to Batch Selection</button>
     </form>
+
+    <dialog class="consent-modal" id="consent-modal" aria-labelledby="consent-title">
+        <h2 id="consent-title">Biometric Consent Notice</h2>
+
+        <p class="consent-lead">Before proceeding, please read and acknowledge how your biometric data will be used.</p>
+
+        <h3>Purpose of Collection</h3>
+        <p>
+            This system captures your facial image to generate a facial embedding, a numerical
+            representation of your facial features. This embedding will be used to assist in identity
+            verification and attendance monitoring during the entrance examination.
+        </p>
+
+        <h3>Data Storage and Privacy</h3>
+        <p>
+            Your facial embedding will be processed and stored for the system's demonstration and
+            attendance verification purposes. Access to the data should be restricted to authorized
+            personnel, and the data should be protected against unauthorized access or misuse.
+        </p>
+
+        <h3>Data Retention</h3>
+        <p>
+            Biometric data will be retained only for the specified demonstration period or as otherwise
+            explained in the system's privacy notice, after which it will be securely deleted, subject to
+            applicable requirements.
+        </p>
+
+        <div class="consent-modal-actions">
+            <button type="button" class="btn-primary" id="accept-consent">I understand</button>
+        </div>
+    </dialog>
+
+    <script src="{{ url_for('static', filename='kiosk/js/registration.js') }}"></script>
 
 {% endblock %}

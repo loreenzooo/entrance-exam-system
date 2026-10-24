@@ -14,7 +14,7 @@
 /* ---------- Left: navy hero ---------- */
 
 .home-hero {
-    flex: 1.15;
+    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -66,32 +66,6 @@
     margin: 0 0 24px;
 }
 
-.home-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.home-chips li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    background: var(--color-primary-light);
-    color: #D5DBEA;
-    font-size: clamp(13px, 1vw, 16px);
-}
-
-.home-chips svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-}
-
 /* ---------- Right: actions ---------- */
 
 .home-actions {
@@ -115,12 +89,6 @@
     font-weight: 500;
     line-height: 1.2;
     color: var(--color-primary);
-    margin: 0 0 6px;
-}
-
-.home-hint {
-    font-size: clamp(15px, 1.2vw, 19px);
-    color: var(--color-text-muted);
     margin: 0 0 28px;
 }
 
@@ -143,8 +111,10 @@
     background: #EEF1F7;
 }
 
+/* Black outline on hover, so the chosen card is unmistakable */
 .home-action:hover {
-    border-color: var(--color-primary);
+    outline: 2px solid #1A1D24;
+    outline-offset: 2px;
 }
 
 .home-action:active {
@@ -205,21 +175,6 @@
     width: 28px;
     height: 28px;
     color: var(--color-primary);
-}
-
-.home-help {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 24px 0 0;
-    font-size: clamp(14px, 1vw, 16px);
-    color: var(--color-text-muted);
-}
-
-.home-help svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
 }
 
 /* ---------- Narrow screens (portrait tablets): stack the two halves ---------- */

@@ -6,11 +6,12 @@ Login (2.1) lives in auth.py.
 """
 import csv
 import io
-from datetime import datetime, date, timedelta
+from datetime import date, datetime
 
 from flask import (Blueprint, render_template, request, redirect, url_for,
                    flash, Response)
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 
 from app.extensions import db
 from app.models import ExamBatch, Applicant, Attendance
@@ -25,20 +26,13 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/dashboard')
 @login_required
 def dashboard():
-    day_start = datetime.combine(date.today(), datetime.min.time())
-    day_end = day_start + timedelta(days=1)
-
-    registrations_today = Applicant.query.filter(
-        Applicant.registered_at >= day_start,
-        Applicant.registered_at < day_end).count()
-
-    timed_in_today = Attendance.query.filter(
-        Attendance.timed_in_at >= day_start,
-        Attendance.timed_in_at < day_end).count()
+    # Overall numbers, not just today's: the kiosk is used across many batches.
+    registrations_total = Applicant.query.count()
+    time_ins_total = Attendance.query.count()
+    batches_total = ExamBatch.query.count()
 
     all_batches = (ExamBatch.query
                    .order_by(ExamBatch.exam_date, ExamBatch.start_time).all())
-    open_batches = sum(1 for b in all_batches if b.is_open)
     upcoming_batches = [b for b in all_batches if not b.has_ended][:5]
 
     recent_attendance = (Attendance.query
@@ -47,9 +41,9 @@ def dashboard():
 
     return render_template(
         'admin/dashboard.html',
-        registrations_today=registrations_today,
-        timed_in_today=timed_in_today,
-        open_batches=open_batches,
+        registrations_total=registrations_total,
+        time_ins_total=time_ins_total,
+        batches_total=batches_total,
         upcoming_batches=upcoming_batches,
         recent_attendance=recent_attendance,
     )
@@ -59,10 +53,13 @@ def dashboard():
 # 2.2 MANAGE EXAM SCHEDULE
 # ==========================================================================
 
-def _read_batch_form():
+def _read_batch_form(allow_past=False):
     """
     Read and validate the batch form (Step 4).
     Returns (values_dict, error_message). error_message is None when valid.
+
+    A new batch must be scheduled for today or later; an existing batch may
+    keep a past date when it is only being corrected.
     """
     try:
         exam_date = datetime.strptime(request.form.get('exam_date', ''), '%Y-%m-%d').date()
@@ -81,6 +78,13 @@ def _read_batch_form():
         return None, "End time must be after the start time."
     if capacity < 1:
         return None, "Capacity must be at least 1."
+
+    if not allow_past:
+        if exam_date < date.today():
+            return None, "The exam date can't be in the past."
+        # A window that already ended earlier today can't be created either.
+        if exam_date == date.today() and end_time <= datetime.now().time():
+            return None, "That window has already ended today. Choose a later end time."
 
     return {
         'exam_date': exam_date,
@@ -108,13 +112,13 @@ def batches():
     if request.method == 'POST':
         values, error = _read_batch_form()
         if error:
-            flash(error)
+            flash(error, 'error')
             return redirect(url_for('admin.batches'))
 
         # The batch ID is assigned automatically by the database.
         db.session.add(ExamBatch(created_by=current_user.id, **values))
         db.session.commit()
-        flash("Batch created.")
+        flash("Batch created.", 'success')
         return redirect(url_for('admin.batches'))
 
     all_batches = (ExamBatch.query
@@ -129,19 +133,19 @@ def edit_batch(batch_id):
 
     reason = _blocked_reason(batch)
     if reason:
-        flash(reason)
+        flash(reason, 'error')
         return redirect(url_for('admin.batches'))
 
     if request.method == 'POST':
-        values, error = _read_batch_form()
+        values, error = _read_batch_form(allow_past=True)
         if error:
-            flash(error)
+            flash(error, 'error')
             return redirect(url_for('admin.edit_batch', batch_id=batch.id))
 
         for field, value in values.items():
             setattr(batch, field, value)
         db.session.commit()
-        flash("Batch updated.")
+        flash("Batch updated.", 'success')
         return redirect(url_for('admin.batches'))
 
     return render_template('admin/edit_batch.html', batch=batch)
@@ -154,12 +158,12 @@ def delete_batch(batch_id):
 
     reason = _blocked_reason(batch)
     if reason:
-        flash(reason)
+        flash(reason, 'error')
         return redirect(url_for('admin.batches'))
 
     db.session.delete(batch)
     db.session.commit()
-    flash("Batch deleted.")
+    flash("Batch deleted.", 'success')
     return redirect(url_for('admin.batches'))
 
 
@@ -167,30 +171,37 @@ def delete_batch(batch_id):
 # 2.3 VIEW ATTENDANCE  (read-only)
 # ==========================================================================
 
-def _attendance_query(batch_id):
-    """Attendance rows, optionally filtered by the applicant's batch."""
-    query = Attendance.query.join(Applicant, Attendance.applicant_id == Applicant.id)
+def _attendance_rows(batch_id):
+    """Every registered applicant, with their time-in if they have one.
+
+    A LEFT JOIN keeps students who have not timed in yet in the list: they
+    show "Not yet timed in" until the batch closes, then "Absent".
+    """
+    query = (db.session.query(Applicant, Attendance)
+             .options(joinedload(Applicant.exam_batch))
+             .outerjoin(Attendance, Attendance.applicant_id == Applicant.id))
     if batch_id:
         query = query.filter(Applicant.exam_batch_id == batch_id)
-    return query.order_by(Attendance.timed_in_at.desc())
+    return query.order_by(
+        Attendance.timed_in_at.desc().nullslast(),
+        Applicant.last_name, Applicant.first_name,
+    ).all()
 
 
 @admin_bp.route('/attendance')
 @login_required
 def attendance():
     batch_filter = request.args.get('batch_id', type=int)
-    records = _attendance_query(batch_filter).all()
+    rows = _attendance_rows(batch_filter)
     all_batches = (ExamBatch.query
                    .order_by(ExamBatch.exam_date, ExamBatch.start_time).all())
-    selected_batch = db.session.get(ExamBatch, batch_filter) if batch_filter else None
 
-    # The template shows a "No records" message when `records` is empty.
+    # The template shows a "No records" message when `rows` is empty.
     return render_template(
         'admin/attendance.html',
-        records=records,
+        rows=rows,
         batches=all_batches,
         batch_filter=batch_filter,
-        selected_batch=selected_batch,
     )
 
 
@@ -204,19 +215,27 @@ def _csv_safe(value):
 @login_required
 def export_attendance():
     batch_filter = request.args.get('batch_id', type=int)
-    records = _attendance_query(batch_filter).all()
+    rows = _attendance_rows(batch_filter)
 
     buffer = io.StringIO()
     writer = csv.writer(buffer)
     writer.writerow(['Full Name', 'Registration Number', 'Batch ID',
-                     'Time-In Timestamp', 'Reference Number'])
-    for r in records:
+                     'Time-In Timestamp', 'Reference Number', 'Status'])
+    for applicant, record in rows:
+        if record:
+            status = 'Present'
+        elif applicant.exam_batch.has_ended:
+            status = 'Absent'
+        else:
+            status = 'Not yet timed in'
+
         writer.writerow([
-            _csv_safe(r.applicant.full_name),
-            r.applicant.registration_number,
-            r.applicant.exam_batch_id,
-            r.timed_in_at.strftime('%Y-%m-%d %H:%M:%S'),
-            r.reference_number,
+            _csv_safe(applicant.full_name),
+            applicant.registration_number,
+            applicant.exam_batch_id,
+            record.timed_in_at.strftime('%Y-%m-%d %H:%M:%S') if record else '',
+            record.reference_number if record else '',
+            status,
         ])
 
     filename = f"attendance_batch_{batch_filter}.csv" if batch_filter else "attendance_all.csv"

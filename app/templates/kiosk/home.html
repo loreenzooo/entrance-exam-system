@@ -1,5 +1,5 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Exam Kiosk{% endblock %}
+{% block title %}Entrance Exam Kiosk{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/home.css') }}">
@@ -11,9 +11,8 @@
     <section class="home-hero">
 
         <div class="home-brand">
-            {# TODO: replace "School name" with your school's real name #}
-            Aquaman University
-            <small>Entrance exam kiosk</small>
+            Premier University
+            <small>Entrance Exam Kiosk</small>
         </div>
 
         <div class="home-art">
@@ -34,24 +33,7 @@
         </div>
 
         <h1 class="home-heading">Welcome</h1>
-        <p class="home-tagline">Face-verified registration and check-in for the entrance exam.</p>
-
-        <ul class="home-chips">
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06" />
-                    <path d="M15 19l2 2l4 -4" />
-                </svg>
-                Your photo isn't stored
-            </li>
-            <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                    <path d="M12 7v5l3 3" />
-                </svg>
-                About 3 minutes
-            </li>
-        </ul>
+        <p class="home-tagline">Face-verified registration and time-in for the entrance exam.</p>
 
     </section>
 
@@ -59,7 +41,6 @@
         <div class="home-actions-inner">
 
             <h2 class="home-question">What would you like to do?</h2>
-            <p class="home-hint">Tap one to begin.</p>
 
             <a href="{{ url_for('kiosk.verify') }}" class="home-action home-action-primary">
                 <span class="home-action-icon">
@@ -72,7 +53,7 @@
                 </span>
                 <span class="home-action-text">
                     <span class="home-action-title">Register</span>
-                    <span class="home-action-desc">First time here. Takes about three minutes.</span>
+                    <span class="home-action-desc">First time here. Register before exam day.</span>
                 </span>
                 <svg class="home-action-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                     <path d="M5 12l14 0" />
@@ -95,7 +76,7 @@
                 </span>
                 <span class="home-action-text">
                     <span class="home-action-title">Time in</span>
-                    <span class="home-action-desc">Already registered and it's exam day. Scan your face to check in.</span>
+                    <span class="home-action-desc">Already registered and it's exam day. Scan your face to time in.</span>
                 </span>
                 <svg class="home-action-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                     <path d="M5 12l14 0" />
@@ -103,15 +84,6 @@
                     <path d="M13 6l6 6" />
                 </svg>
             </a>
-
-            <p class="home-help">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                    <path d="M12 17v.01" />
-                    <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
-                </svg>
-                Need help? Ask the front desk.
-            </p>
 
         </div>
     </section>

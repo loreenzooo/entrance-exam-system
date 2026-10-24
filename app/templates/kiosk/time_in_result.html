@@ -2,7 +2,7 @@
 {% set flow = 'timein' %}
 {% set step = 'done' %}
 
-{% block title %}Time In - Exam Kiosk{% endblock %}
+{% block title %}Time In - Entrance Exam Kiosk{% endblock %}
 
 {% block page_head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/confirmation.css') }}">
@@ -11,7 +11,7 @@
 {% block content %}
 
     {% if already %}
-        <h1 class="kiosk-heading">Already Timed In</h1>
+        <h1 class="kiosk-heading is-alert">Already Timed In</h1>
         <p class="kiosk-subtext">{{ applicant.full_name }}, you already timed in earlier. Nothing new was recorded.</p>
     {% else %}
         <h1 class="kiosk-heading">Time In Recorded</h1>
@@ -29,7 +29,6 @@
         <div><dt>Building</dt><dd>{{ applicant.exam_batch.building }}</dd></div>
         <div><dt>Room</dt><dd>{{ applicant.exam_batch.room }}</dd></div>
         <div><dt>Time In</dt><dd>{{ record.timed_in_at.strftime('%b %d, %Y %I:%M %p') }}</dd></div>
-        <div><dt>Status</dt><dd>{{ record.status }}</dd></div>
     </dl>
 
     <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-link">Done</a>

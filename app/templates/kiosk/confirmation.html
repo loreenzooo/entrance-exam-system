@@ -2,19 +2,13 @@
 {% set flow = 'register' %}
 {% set step = 'done' %}
 
-{% block title %}Registration Confirmed - Exam Kiosk{% endblock %}
+{% block title %}Registration Confirmed - Entrance Exam Kiosk{% endblock %}
 
 {% block page_head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/confirmation.css') }}">
 {% endblock %}
 
 {% block content %}
-
-    <div class="confirmation-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M5 12l5 5l10 -10" />
-        </svg>
-    </div>
 
     <h1 class="kiosk-heading">Registration Confirmed</h1>
     <p class="kiosk-subtext">Thank you, {{ applicant.full_name }}. Your seat is reserved. Keep your registration number.</p>
@@ -33,6 +27,6 @@
         <div><dt>Room</dt><dd>{{ applicant.exam_batch.room }}</dd></div>
     </dl>
 
-    <a href="{{ url_for('kiosk.verify') }}" class="btn-primary btn-link">Done - Next Applicant</a>
+    <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-link">Done</a>
 
 {% endblock %}

@@ -87,39 +87,3 @@
     outline-offset: 1px;
     border-color: var(--color-primary);
 }
-
-/* ---------- Step indicator ----------
-   Will be replaced by the side-panel step list during the redesign. */
-
-.step-track {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 36px;
-}
-
-.step-track .step {
-    flex: 1;
-    height: 3px;
-    background: var(--color-border);
-    border-radius: 2px;
-    position: relative;
-}
-
-.step-track .step.done,
-.step-track .step.active {
-    background: var(--color-primary);
-}
-
-.step-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--color-text-muted);
-    margin-bottom: 28px;
-}
-
-.step-labels .current {
-    color: var(--color-primary);
-    font-weight: 600;
-}

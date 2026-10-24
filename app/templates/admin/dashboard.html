@@ -1,14 +1,11 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}Dashboard{% endblock %}
-{% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/dashboard.css') }}">
-{% endblock %}
 {% block content %}
 
     <div class="page-header">
         <div>
             <h1 class="page-heading">Dashboard</h1>
-            <p class="page-subtext">Welcome, {{ current_user.full_name or current_user.username }}. Here is today's overview.</p>
+            <p class="page-subtext">Welcome, {{ current_user.full_name or current_user.username }}. Here is the overall picture.</p>
         </div>
         <div class="page-actions">
             <a href="{{ url_for('admin.batches') }}" class="btn-secondary">Manage Exam Schedule</a>
@@ -18,16 +15,16 @@
 
     <div class="stat-grid">
         <div class="stat-card">
-            <span class="stat-value">{{ registrations_today }}</span>
-            <span class="stat-label">Registrations today</span>
+            <span class="stat-value">{{ registrations_total }}</span>
+            <span class="stat-label">Registered applicants</span>
         </div>
         <div class="stat-card">
-            <span class="stat-value">{{ timed_in_today }}</span>
-            <span class="stat-label">Timed in today</span>
+            <span class="stat-value">{{ time_ins_total }}</span>
+            <span class="stat-label">Time-ins recorded</span>
         </div>
         <div class="stat-card">
-            <span class="stat-value">{{ open_batches }}</span>
-            <span class="stat-label">Open exam batches</span>
+            <span class="stat-value">{{ batches_total }}</span>
+            <span class="stat-label">Exam batches</span>
         </div>
     </div>
 
@@ -41,9 +38,7 @@
             {% if upcoming_batches %}
             <ul class="panel-list">
                 {% for batch in upcoming_batches %}
-                {% if batch.is_ongoing %}{% set status = 'ongoing' %}
-                {% elif batch.is_full %}{% set status = 'full' %}
-                {% else %}{% set status = 'open' %}{% endif %}
+                {% set status = batch.status %}
                 {% set pct = ((batch.reserved_seats / batch.capacity) * 100)|round|int if batch.capacity else 0 %}
                 <li class="panel-row">
                     <div class="panel-row-main">
@@ -56,7 +51,7 @@
                             · {{ batch.building }}, Room {{ batch.room }}
                         </span>
                     </div>
-                    <div class="seats">
+                    <div class="panel-row-side seats">
                         {{ batch.reserved_seats }} / {{ batch.capacity }}
                         <div class="seats-bar {{ 'is-full' if pct >= 100 }}"><span style="width: {{ [pct, 100]|min }}%"></span></div>
                     </div>

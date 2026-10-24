@@ -13,16 +13,9 @@
         </button>
     </div>
 
-    {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-            {% set ok = ('created' in message) or ('updated' in message) or ('deleted' in message) %}
-            <div class="{{ 'flash-success' if ok else 'flash-error' }}" role="status">{{ message }}</div>
-        {% endfor %}
-    {% endwith %}
-
     <div class="toolbar">
         <div class="search-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
             <input type="search" id="filter-search" placeholder="Search by Batch ID or Building..." aria-label="Search batches">
         </div>
         <select id="filter-status" aria-label="Filter by status">
@@ -51,10 +44,7 @@
             </thead>
             <tbody>
                 {% for batch in batches %}
-                {% if batch.is_ongoing %}{% set status = 'ongoing' %}
-                {% elif batch.has_ended %}{% set status = 'ended' %}
-                {% elif batch.is_full %}{% set status = 'full' %}
-                {% else %}{% set status = 'open' %}{% endif %}
+                {% set status = batch.status %}
                 {% set locked = batch.is_ongoing or batch.reserved_seats > 0 %}
                 {% set pct = ((batch.reserved_seats / batch.capacity) * 100)|round|int if batch.capacity else 0 %}
                 <tr data-status="{{ status }}"

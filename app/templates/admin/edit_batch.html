@@ -2,39 +2,52 @@
 {% block title %}Edit Batch{% endblock %}
 {% block content %}
 
-    <h1 class="page-heading">Edit Batch</h1>
-    <p class="page-subtext">{{ batch.batch_name }}</p>
-
-    <div class="inline-form-card">
-        <form method="POST">
-            <div class="field">
-                <label for="batch_name">Batch Name</label>
-                <input type="text" id="batch_name" name="batch_name" value="{{ batch.batch_name }}" required>
-            </div>
-            <div class="field">
-                <label for="exam_date">Exam Date</label>
-                <input type="date" id="exam_date" name="exam_date" value="{{ batch.exam_date.strftime('%Y-%m-%d') }}" required>
-            </div>
-            <div class="field">
-                <label for="start_time">Start Time</label>
-                <input type="time" id="start_time" name="start_time" value="{{ batch.start_time.strftime('%H:%M') }}" required>
-            </div>
-            <div class="field">
-                <label for="end_time">End Time</label>
-                <input type="time" id="end_time" name="end_time" value="{{ batch.end_time.strftime('%H:%M') }}" required>
-            </div>
-            <div class="field">
-                <label for="capacity">Capacity</label>
-                <input type="number" id="capacity" name="capacity" min="1" value="{{ batch.capacity }}" required>
-            </div>
-            <div class="field">
-                <label for="venue">Venue (optional)</label>
-                <input type="text" id="venue" name="venue" value="{{ batch.venue or '' }}">
-            </div>
-            <button type="submit" class="btn-primary">Save Changes</button>
-        </form>
+    <div class="page-header">
+        <div>
+            <h1 class="page-heading">Edit Batch #{{ batch.id }}</h1>
+            <p class="page-subtext">Update the schedule, venue or capacity of this batch.</p>
+        </div>
     </div>
 
-    <a href="{{ url_for('admin.batches') }}" class="link-button">Cancel</a>
+    <div class="form-card">
+        <form method="POST" action="{{ url_for('admin.edit_batch', batch_id=batch.id) }}">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="exam_date">Exam Date</label>
+                    <input type="date" id="exam_date" name="exam_date"
+                           value="{{ batch.exam_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div class="field">
+                    <label for="capacity">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" min="1"
+                           value="{{ batch.capacity }}" required>
+                </div>
+                <div class="field">
+                    <label for="start_time">Start Time</label>
+                    <input type="time" id="start_time" name="start_time"
+                           value="{{ batch.start_time.strftime('%H:%M') }}" required>
+                </div>
+                <div class="field">
+                    <label for="end_time">End Time</label>
+                    <input type="time" id="end_time" name="end_time"
+                           value="{{ batch.end_time.strftime('%H:%M') }}" required>
+                </div>
+                <div class="field">
+                    <label for="building">Building</label>
+                    <input type="text" id="building" name="building"
+                           value="{{ batch.building }}" required>
+                </div>
+                <div class="field">
+                    <label for="room">Room</label>
+                    <input type="text" id="room" name="room"
+                           value="{{ batch.room }}" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a href="{{ url_for('admin.batches') }}" class="btn-secondary">Cancel</a>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}

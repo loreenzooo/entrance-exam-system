@@ -19,7 +19,7 @@
 {% block shell %}
 {% set step_names = {
     'register': ['Face', 'Details', 'Batch', 'Confirmed'],
-    'timein': ['Scan', 'Checked in']
+    'timein': ['Scan', 'Timed in']
 } %}
 {% set current_flow = flow|default('register') %}
 {% set current_step = step|default(1) %}
@@ -29,9 +29,8 @@
 
     <aside class="side-panel">
         <div class="side-brand">
-            {# TODO: replace "School name" with your school's real name #}
-            Aquaman University
-            <small>Entrance exam kiosk</small>
+            Premier University
+            <small>Entrance Exam Kiosk</small>
         </div>
 
         <ol class="side-steps" aria-label="Progress">
@@ -50,12 +49,11 @@
                 </li>
             {% endfor %}
         </ol>
-
-        <p class="side-help">Need help?<br>Ask the front desk.</p>
     </aside>
 
     <main class="panel-main">
         <div class="panel-content">
+            {% include "_flashes.html" %}
             {% block content %}{% endblock %}
         </div>
     </main>

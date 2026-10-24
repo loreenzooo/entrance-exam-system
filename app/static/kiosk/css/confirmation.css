@@ -1,24 +1,7 @@
 /* ============================================
    CONFIRMATION - used by confirmation.html and time_in_result.html
-   Success icon, reference number box, and the details card.
+   Reference number box and the details card.
    ============================================ */
-
-.confirmation-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 24px;
-    border-radius: 50%;
-    background: #E4F1EC;
-    color: var(--color-success);
-}
-
-.confirmation-icon svg {
-    width: 34px;
-    height: 34px;
-}
 
 /* The number the applicant must keep - the largest thing on the page */
 .confirmation-box {

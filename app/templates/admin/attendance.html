@@ -1,112 +1,133 @@
 {% extends "admin/base_admin.html" %}
 {% block title %}View Attendance{% endblock %}
-{% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/attendance.css') }}">
-{% endblock %}
 {% block content %}
 
     <div class="page-header">
         <div>
             <h1 class="page-heading">View Attendance</h1>
-            <p class="page-subtext">Attendance records from Time In. This list is read-only.</p>
+            <p class="page-subtext">Every registered applicant and their time-in status.</p>
         </div>
-        {% if records %}
+        {% if rows %}
         <a href="{{ url_for('admin.export_attendance', batch_id=batch_filter) }}" class="btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
             Export CSV
         </a>
         {% endif %}
     </div>
 
-    <form method="GET" class="toolbar attendance-toolbar">
-        <select id="batch_id" name="batch_id" aria-label="Filter by batch" onchange="this.form.submit()">
-            <option value="">All Batches</option>
-            {% for batch in batches %}
-                <option value="{{ batch.id }}" {% if batch_filter == batch.id %}selected{% endif %}>
-                    Batch #{{ batch.id }} · {{ batch.exam_date.strftime('%b %d, %Y') }} ·
-                    {{ batch.start_time.strftime('%I:%M %p') }} – {{ batch.end_time.strftime('%I:%M %p') }} ·
-                    {{ batch.building }} {{ batch.room }}
-                </option>
-            {% endfor %}
-        </select>
-        <noscript><button type="submit" class="btn-secondary">Apply Filter</button></noscript>
-        {% if batch_filter %}
-            <a href="{{ url_for('admin.attendance') }}" class="btn-secondary">Clear filter</a>
-        {% endif %}
-        {% if records %}
+    <div class="toolbar">
         <div class="search-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-            <input type="search" id="filter-search" placeholder="Search name, registration or reference no..." aria-label="Search attendance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="search" id="filter-search" placeholder="Search by name or registration number..." aria-label="Search attendance">
         </div>
+
+        <!-- Batch filter: reloads the page so the CSV export follows the same batch -->
+        <form method="GET" id="batch-form">
+            <select name="batch_id" id="batch_id" class="batch-filter" aria-label="Filter by batch"
+                    onchange="document.getElementById('batch-form').submit();">
+                <option value="">Batch: All</option>
+                {% for batch in batches %}
+                    <option value="{{ batch.id }}" {% if batch_filter == batch.id %}selected{% endif %}>
+                        Batch {{ batch.id }} - {{ batch.exam_date.strftime('%b %d, %Y') }},
+                        {{ batch.start_time.strftime('%I:%M %p') }} - {{ batch.end_time.strftime('%I:%M %p') }},
+                        {{ batch.building }} {{ batch.room }}
+                    </option>
+                {% endfor %}
+            </select>
+            <noscript><button type="submit" class="btn-secondary">Apply</button></noscript>
+        </form>
+
+        <select id="filter-status" aria-label="Filter by status">
+            <option value="">Status: All</option>
+            <option value="not-timed-in">Not yet timed in</option>
+            <option value="present">Present</option>
+            <option value="absent">Absent</option>
+        </select>
+
+        {% if rows %}
+        <span class="result-count" id="result-count">{{ rows|length }} applicant{{ '' if rows|length == 1 else 's' }}</span>
         {% endif %}
-    </form>
+    </div>
 
-    {% if records %}
-        <p class="result-summary">
-            {% if selected_batch %}
-                <strong>{{ records|length }}</strong> of {{ selected_batch.reserved_seats }} registered applicants have timed in for Batch #{{ selected_batch.id }}.
-            {% else %}
-                <strong>{{ records|length }}</strong> time-in record{{ '' if records|length == 1 else 's' }} across all batches.
-            {% endif %}
-        </p>
-
-        <div class="table-card">
-            <table class="data-table attendance-table" id="attendance-table">
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Registration No.</th>
-                        <th>Batch ID</th>
-                        <th>Time-In</th>
-                        <th>Reference No.</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for record in records %}
-                    <tr data-search="{{ record.applicant.full_name|lower }} {{ record.applicant.registration_number|lower }} {{ record.reference_number|lower }}">
-                        <td>{{ record.applicant.full_name }}</td>
-                        <td class="muted">{{ record.applicant.registration_number }}</td>
-                        <td class="batch-id">#{{ record.applicant.exam_batch_id }}</td>
-                        <td class="muted">{{ record.timed_in_at.strftime('%b %d, %Y %I:%M:%S %p') }}</td>
-                        <td class="muted ref-no">{{ record.reference_number }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div class="empty-state" id="no-matches" hidden>
-                <strong>No matching records</strong>
-                Try a different search.
-            </div>
+    <div class="table-card">
+        {% if rows %}
+        <table class="data-table" id="attendance-table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Registration No.</th>
+                    <th>Batch ID</th>
+                    <th>Time-In</th>
+                    <th>Reference No.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for applicant, record in rows %}
+                {% if record %}
+                    {% set st = 'present' %}
+                    {% set status_label = 'Present' %}
+                {% elif applicant.exam_batch.has_ended %}
+                    {% set st = 'absent' %}
+                    {% set status_label = 'Absent' %}
+                {% else %}
+                    {% set st = 'not-timed-in' %}
+                    {% set status_label = 'Not yet timed in' %}
+                {% endif %}
+                <tr data-status="{{ st }}"
+                    data-search="{{ applicant.full_name|lower }} {{ applicant.registration_number|lower }} {{ (record.reference_number or '')|lower if record else '' }}">
+                    <td class="cell-name">{{ applicant.full_name }}</td>
+                    <td class="muted">{{ applicant.registration_number }}</td>
+                    <td><span class="status-badge status-open">Batch {{ applicant.exam_batch_id }}</span></td>
+                    <td class="muted">
+                        {{ record.timed_in_at.strftime('%b %d, %Y %I:%M %p') if record else '—' }}
+                    </td>
+                    <td class="muted">{{ record.reference_number if record else '—' }}</td>
+                    <td>
+                        <span class="status-badge status-{{ st }}">{{ status_label }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="empty-state" id="no-matches" hidden>
+            <strong>No matching records</strong>
+            Try a different search or clear the filters.
         </div>
-
-        <script>
-        (function () {
-            var search = document.getElementById('filter-search');
-            var rows = document.querySelectorAll('#attendance-table tbody tr');
-            var empty = document.getElementById('no-matches');
-            search.addEventListener('input', function () {
-                var q = search.value.trim().toLowerCase();
-                var visible = 0;
-                rows.forEach(function (row) {
-                    var show = !q || row.dataset.search.indexOf(q) !== -1;
-                    row.hidden = !show;
-                    if (show) visible++;
-                });
-                empty.hidden = visible !== 0;
-            });
-            // Pressing Enter in the search box shouldn't reload the page
-            search.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
-        })();
-        </script>
-    {% else %}
+        {% else %}
         <div class="empty-state">
             <strong>No records</strong>
-            {% if batch_filter %}
-                No one has timed in for this batch yet.
-            {% else %}
-                No attendance has been recorded yet.
-            {% endif %}
+            {% if batch_filter %}No one has registered for this batch yet.{% else %}No one has registered yet.{% endif %}
         </div>
-    {% endif %}
+        {% endif %}
+    </div>
+
+    <script>
+    (function () {
+        var table = document.getElementById('attendance-table');
+        if (!table) return;
+        var rows = table.querySelectorAll('tbody tr');
+        var search = document.getElementById('filter-search');
+        var status = document.getElementById('filter-status');
+        var empty = document.getElementById('no-matches');
+        var count = document.getElementById('result-count');
+
+        function apply() {
+            var q = search.value.trim().toLowerCase();
+            var visible = 0;
+            rows.forEach(function (row) {
+                var show =
+                    (!q || row.dataset.search.indexOf(q) !== -1) &&
+                    (!status.value || row.dataset.status === status.value);
+                row.hidden = !show;
+                if (show) visible++;
+            });
+            empty.hidden = visible !== 0;
+            if (count) count.textContent = visible + (visible === 1 ? ' applicant' : ' applicants');
+        }
+        search.addEventListener('input', apply);
+        status.addEventListener('change', apply);
+    })();
+    </script>
 
 {% endblock %}

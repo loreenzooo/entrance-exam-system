@@ -2,7 +2,7 @@
 {% set flow = 'register' %}
 {% set step = 3 %}
 
-{% block title %}Select Exam Batch - Exam Kiosk{% endblock %}
+{% block title %}Select Exam Batch - Entrance Exam Kiosk{% endblock %}
 
 {% block page_head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/batch.css') }}">
@@ -12,14 +12,6 @@
 
     <h1 class="kiosk-heading">Select Your Exam Batch</h1>
     <p class="kiosk-subtext">Choose an open exam slot below.</p>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="flash-error">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
     {% if batches %}
         <form method="POST" action="{{ url_for('kiosk.select_batch') }}">
@@ -57,7 +49,7 @@
                 </svg>
             </div>
             <h2 class="empty-state-title">No exam batches are open right now</h2>
-            <p class="empty-state-text">Please check back later or ask the front desk.</p>
+            <p class="empty-state-text">Please check back later.</p>
             <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-secondary btn-link">Back to start</a>
         </div>
     {% endif %}

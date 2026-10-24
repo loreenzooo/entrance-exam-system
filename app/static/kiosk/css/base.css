@@ -57,6 +57,11 @@ body {
     color: var(--color-primary);
 }
 
+/* A heading that reports a problem, e.g. "Already Timed In" */
+.kiosk-heading.is-alert {
+    color: #A13A3A;
+}
+
 .kiosk-subtext {
     color: var(--color-text-muted);
     font-size: 15px;

@@ -1,0 +1,21 @@
+{# Camera preview + capture form, shared by Face Capture and Time In. #}
+<div id="camera-frame" class="camera-frame frame-warning">
+    <video id="camera-video" class="camera-preview" autoplay playsinline muted></video>
+</div>
+
+<p id="face-status" class="face-status">Starting camera...</p>
+
+<canvas id="camera-canvas" class="hidden-canvas"></canvas>
+<canvas id="brightness-canvas" class="hidden-canvas"></canvas>
+
+<form method="POST" id="verify-form">
+    <input type="hidden" name="photo_data" id="photo_data">
+    <button type="button" id="capture-btn" class="btn-primary" disabled>Capture</button>
+</form>
+
+<p class="helper-text">Your face is converted to a numeric template. The photo itself is not stored.</p>
+
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+<script src="{{ url_for('static', filename='kiosk/js/camera.js') }}"></script>
+<script src="{{ url_for('static', filename='kiosk/js/face-detector.js') }}"></script>
+<script src="{{ url_for('static', filename='kiosk/js/verify.js') }}"></script>

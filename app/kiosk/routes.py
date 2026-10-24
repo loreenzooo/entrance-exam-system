@@ -9,7 +9,7 @@ Until then the face embedding and typed details live in the session, so
 an abandoned registration leaves no record behind.
 """
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from sqlalchemy.exc import IntegrityError
@@ -17,8 +17,9 @@ from sqlalchemy.exc import IntegrityError
 from app.extensions import db
 from app.models import Applicant, ExamBatch, Attendance
 from app.services import face_service
-from datetime import datetime, timedelta
-EARLY_GRACE_MINUTES = 15 
+from app.utils.validators import is_valid_contact_number, is_valid_email
+
+EARLY_GRACE_MINUTES = 15
 
 kiosk_bp = Blueprint('kiosk', __name__)
 
@@ -29,6 +30,45 @@ _PENDING_KEYS = ('face_embedding', 'form')
 def _clear_pending():
     for key in _PENDING_KEYS:
         session.pop(key, None)
+
+
+def _email_already_registered(email):
+    """Case-insensitive check: one applicant per email address."""
+    return Applicant.query.filter(
+        db.func.lower(Applicant.email) == email.strip().lower()
+    ).first() is not None
+
+
+def _contact_already_registered(contact_number):
+    """One applicant per mobile number."""
+    return Applicant.query.filter(
+        Applicant.contact_number == contact_number.strip()
+    ).first() is not None
+
+
+def _read_face(photo_data):
+    """Turn the posted photo into an encoding, or explain why we can't.
+
+    The Capture button is already disabled in the browser until a face is
+    visible; this is the server-side safety net. It never raises: a missing
+    field, bad base64 or an unreadable image becomes a message instead of a
+    500 error.
+
+    Returns (encoding, problem) - exactly one of them is None.
+    """
+    try:
+        is_valid, reason = face_service.check_face_quality(photo_data)
+        if not is_valid:
+            return None, f"We couldn't get a clear photo: {reason}"
+
+        encoding = face_service.encode_face(photo_data)
+    except (AttributeError, ValueError, OSError):
+        return None, "That photo could not be read. Please try again."
+
+    if encoding is None:
+        return None, "We couldn't read your face. Please try again."
+
+    return encoding, None
 
 
 def _new_registration_number():
@@ -71,18 +111,10 @@ def verify():
     if request.method == 'POST':
         photo_data = request.form.get('photo_data')
 
-        # Quality check (the Capture button is already disabled in the browser
-        # until a clear face is detected, this is the server-side safety net)
-        is_valid, reason = face_service.check_face_quality(photo_data)
-        if not is_valid:
-            flash(f"We couldn't get a clear photo: {reason}")
+        encoding, problem = _read_face(photo_data)
+        if problem:
+            flash(problem)
             return redirect(url_for('kiosk.verify'))
-
-        encoding = face_service.encode_face(photo_data)
-
-        if encoding is None:
-            flash("We couldn't read your face. Please try again.")
-            return redirect(url_for('kiosk.verify'))   # kiosk.time_in in time_in()
 
         # Duplicate check against EVERY registered applicant
         existing = Applicant.query.all()
@@ -124,14 +156,30 @@ def register():
         required = ('first_name', 'last_name', 'contact_number', 'email', 'address')
         if any(not form[f] for f in required):
             flash("Please fill in all required fields.")
-        elif '@' not in form['email']:
+        elif not is_valid_contact_number(form['contact_number']):
+            flash("Please enter a valid contact number in 09XXXXXXXXX format.")
+        elif not is_valid_email(form['email']):
             flash("Please enter a valid email address.")
-        elif not consent:
-            flash("You must accept the biometric consent notice to continue.")
         else:
-            session['form'] = form
-            session['consent_at'] = datetime.utcnow().isoformat()
-            return redirect(url_for('kiosk.select_batch'))
+            # Both uniqueness checks run, so the applicant is told about
+            # every duplicate at once instead of fixing them one per submit.
+            taken = []
+            if _email_already_registered(form['email']):
+                taken.append('email address')
+            if _contact_already_registered(form['contact_number']):
+                taken.append('contact number')
+
+            if len(taken) == 1:
+                flash(f"That {taken[0]} is already registered. Please use a different one.")
+            elif taken:
+                flash(f"That {' and '.join(taken)} are already registered. "
+                      "Please use different ones.")
+            elif not consent:
+                flash("You must accept the biometric consent notice to continue.")
+            else:
+                session['form'] = form
+                session['consent_at'] = datetime.utcnow().isoformat()
+                return redirect(url_for('kiosk.select_batch'))
 
     return render_template('kiosk/register.html', form=form)
 
@@ -173,7 +221,16 @@ def select_batch():
             exam_batch_id=batch.id,
         )
         db.session.add(applicant)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            # The database also enforces one applicant per email / number, so
+            # two kiosks saving the same person at once can still collide.
+            db.session.rollback()
+            _clear_pending()
+            session.pop('consent_at', None)
+            flash("That email or contact number was just registered. Please start again.", 'error')
+            return redirect(url_for('kiosk.home'))
 
         _clear_pending()
         session.pop('consent_at', None)
@@ -209,12 +266,10 @@ def time_in():
     if request.method == 'POST':
         photo_data = request.form.get('photo_data')
 
-        is_valid, reason = face_service.check_face_quality(photo_data)
-        if not is_valid:
-            flash(f"We couldn't get a clear photo: {reason}")
+        encoding, problem = _read_face(photo_data)
+        if problem:
+            flash(problem)
             return redirect(url_for('kiosk.time_in'))
-
-        encoding = face_service.encode_face(photo_data)
 
         # Step 4: search all registered faces for the best match
         match = face_service.find_match(encoding, Applicant.query.all())
@@ -256,7 +311,7 @@ def time_in():
             flash("Time In for your exam batch has closed.")
             return redirect(url_for('kiosk.time_in'))
 
-        # Step 6: record Present with the exact timestamp and a reference number
+        # Arriving after the start is still Present: there is no "Late" state.
         record = Attendance(
             applicant_id=match.id,
             timed_in_at=datetime.now(),

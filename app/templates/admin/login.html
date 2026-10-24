@@ -4,46 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
 </head>
 <body>
-    <div class="login-page">
+    <div class="login-shell">
 
-        <section class="login-brand-panel" aria-hidden="true">
-            <div>
-                <span class="login-brand-mark">ENTRANCE EXAM</span>
-                <h2 class="login-brand-heading">Face Recognition Attendance System</h2>
-                <p class="login-brand-tagline">Manage exam schedules and review attendance records in one place.</p>
+        <!-- Left: brand panel, styled like the kiosk's navy side panel -->
+        <aside class="login-brand" aria-hidden="true">
+            <div class="login-brand-mark">
+                Premier University
+                <small>Entrance Exam System</small>
             </div>
-            <div class="login-brand-footer">Admin panel</div>
-        </section>
 
-        <section class="login-form-panel">
+            <div class="brand-face">
+                <span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+                </span>
+            </div>
+
+            <h2 class="brand-headline">Manage Exams<br>and Attendance</h2>
+
+            <!-- Floating icon tiles -->
+            <div class="tile tile-clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+            </div>
+            <div class="tile tile-shield">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div class="tile tile-calendar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+            </div>
+            <div class="tile tile-user">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="tile tile-check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+        </aside>
+
+        <!-- Right: login form -->
+        <main class="login-main">
             <div class="login-card">
-                <span class="login-eyebrow">ADMIN PANEL</span>
-                <h1 class="login-heading">Sign in</h1>
-                <p class="login-subheading">Enter your username and password to continue.</p>
+                <h1>Admin Login</h1>
+                <p class="login-subtext">Enter your staff credentials to continue.</p>
 
-                {% with messages = get_flashed_messages() %}
-                    {% for message in messages %}
-                        <div class="flash-error" role="alert">{{ message }}</div>
-                    {% endfor %}
-                {% endwith %}
+                {% include "_flashes.html" %}
 
                 <form method="POST">
                     <div class="field">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" autocomplete="username" autofocus required>
+                        <input type="text" id="username" name="username" placeholder="Enter your username"
+                               autocomplete="username" autofocus required>
                     </div>
                     <div class="field">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" autocomplete="current-password" required>
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                               autocomplete="current-password" required>
                     </div>
                     <button type="submit" class="btn-primary">Log In</button>
                 </form>
             </div>
-        </section>
+        </main>
 
     </div>
 </body>

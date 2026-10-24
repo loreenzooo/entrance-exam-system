@@ -81,9 +81,15 @@ class ExamBatch(db.Model):
         return not self.is_full and not self.has_ended
 
     @property
-    def is_editable(self):
-        """2.2: update/delete only if not ongoing and no applicant assigned."""
-        return not self.is_ongoing and self.reserved_seats == 0
+    def status(self):
+        """One label for the status badge on the dashboard and the batch table."""
+        if self.is_ongoing:
+            return 'ongoing'
+        if self.has_ended:
+            return 'ended'
+        if self.is_full:
+            return 'full'
+        return 'open'
 
 
 # --------------------------------------------------------------------------
@@ -99,8 +105,10 @@ class Applicant(db.Model):
     middle_name = db.Column(db.String(80), nullable=True)    # optional
     last_name = db.Column(db.String(80), nullable=False)
     suffix = db.Column(db.String(20), nullable=True)         # optional
-    contact_number = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(150), nullable=False)
+    # One applicant per mobile number and per email address. The route checks
+    # this before saving; unique=True keeps a fresh database enforcing it too.
+    contact_number = db.Column(db.String(20), nullable=False, unique=True)
+    email = db.Column(db.String(150), nullable=False, unique=True)
     address = db.Column(db.String(255), nullable=False)
 
     # Face embedding only, never the photo. Duplicate check (1.1 Step 4)
