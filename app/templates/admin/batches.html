@@ -45,7 +45,7 @@
             <tbody>
                 {% for batch in batches %}
                 {% set status = batch.status %}
-                {% set locked = batch.is_ongoing or batch.reserved_seats > 0 %}
+                {% set locked = batch.is_ongoing or batch.has_ended or batch.reserved_seats > 0 %}
                 {% set pct = ((batch.reserved_seats / batch.capacity) * 100)|round|int if batch.capacity else 0 %}
                 <tr data-status="{{ status }}"
                     data-date="{{ batch.exam_date.strftime('%Y-%m-%d') }}"
@@ -60,14 +60,14 @@
                     </td>
                     <td><span class="status-badge status-{{ status }}">{{ status }}</span></td>
                     <td class="col-actions">
-                        <a href="{{ url_for('admin.edit_batch', batch_id=batch.id) }}"
+                        <a href="{{ url_for('admin.batches', edit=batch.id) }}"
                            class="link-button {{ 'is-locked' if locked }}"
                            {% if locked %}title="This batch can't be changed right now"{% endif %}>Edit</a>
-                        <form method="POST" action="{{ url_for('admin.delete_batch', batch_id=batch.id) }}" class="inline-form"
-                              onsubmit="return confirm('Delete batch #{{ batch.id }}? This cannot be undone.');">
-                            <button type="submit" class="link-button link-button-danger {{ 'is-locked' if locked }}"
-                                    {% if locked %}title="This batch can't be changed right now"{% endif %}>Delete</button>
-                        </form>
+                        <button type="button"
+                                class="link-button link-button-danger {{ 'is-locked' if locked }}"
+                                data-delete-url="{{ url_for('admin.delete_batch', batch_id=batch.id) }}"
+                                data-delete-label="batch #{{ batch.id }}"
+                                {% if locked %}disabled title="This batch can't be changed right now"{% endif %}>Delete</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -166,6 +166,99 @@
             el.addEventListener('input', apply);
             el.addEventListener('change', apply);
         });
+    })();
+    </script>
+
+    <!-- Delete confirmation (replaces the browser confirm dialog) -->
+    <dialog class="modal" id="delete-modal" aria-labelledby="delete-title">
+        <h2 id="delete-title">Delete batch</h2>
+        <p class="modal-text">
+            This permanently removes <strong id="delete-label"></strong> and its schedule.
+            This cannot be undone.
+        </p>
+        <form method="POST" id="delete-form">
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancel-delete">Cancel</button>
+                <button type="submit" class="btn-danger">Delete</button>
+            </div>
+        </form>
+    </dialog>
+
+    {% if editing %}
+    <!-- Edit Batch modal: same form as Create, prefilled -->
+    <dialog class="modal" id="edit-modal" aria-labelledby="edit-title">
+        <h2 id="edit-title">Edit Batch #{{ editing.id }}</h2>
+        <form method="POST" action="{{ url_for('admin.edit_batch', batch_id=editing.id) }}">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="edit-exam_date">Exam Date</label>
+                    <input type="date" id="edit-exam_date" name="exam_date"
+                           value="{{ editing.exam_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div class="field">
+                    <label for="edit-building">Building</label>
+                    <input type="text" id="edit-building" name="building"
+                           value="{{ editing.building }}" required>
+                </div>
+                <div class="field">
+                    <label for="edit-start_time">Start Time</label>
+                    <input type="time" id="edit-start_time" name="start_time"
+                           value="{{ editing.start_time.strftime('%H:%M') }}" required>
+                </div>
+                <div class="field">
+                    <label for="edit-room">Room</label>
+                    <input type="text" id="edit-room" name="room"
+                           value="{{ editing.room }}" required>
+                </div>
+                <div class="field">
+                    <label for="edit-end_time">End Time</label>
+                    <input type="time" id="edit-end_time" name="end_time"
+                           value="{{ editing.end_time.strftime('%H:%M') }}" required>
+                </div>
+                <div class="field">
+                    <label for="edit-capacity">Capacity</label>
+                    <input type="number" id="edit-capacity" name="capacity" min="1"
+                           value="{{ editing.capacity }}" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a href="{{ url_for('admin.batches') }}" class="btn-secondary">Cancel</a>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </dialog>
+    {% endif %}
+
+    <script>
+    (function () {
+        // ----- Delete confirmation modal -----
+        var deleteModal = document.getElementById('delete-modal');
+        var deleteForm = document.getElementById('delete-form');
+        var deleteLabel = document.getElementById('delete-label');
+
+        document.querySelectorAll('[data-delete-url]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                deleteForm.action = btn.dataset.deleteUrl;
+                deleteLabel.textContent = btn.dataset.deleteLabel;
+                deleteModal.showModal();
+            });
+        });
+
+        document.getElementById('cancel-delete').addEventListener('click', function () {
+            deleteModal.close();
+        });
+        deleteModal.addEventListener('click', function (e) {
+            if (e.target === deleteModal) deleteModal.close();
+        });
+
+        // ----- Edit modal opens when the list was loaded with ?edit=<id> -----
+        var editModal = document.getElementById('edit-modal');
+        if (editModal) {
+            editModal.showModal();
+            editModal.addEventListener('click', function (e) {
+                if (e.target === editModal) editModal.close();
+            });
+        }
     })();
     </script>
 

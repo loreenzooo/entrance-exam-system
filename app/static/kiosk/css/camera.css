@@ -24,14 +24,16 @@
 }
 
 /* max-height keeps the whole page on one screen on shorter displays.
-   Only the on-screen preview is cropped; the captured photo is not. */
+   Only the on-screen preview is cropped; the captured photo is not.
+   The placeholder is dark navy rather than pure black, so an idle camera
+   still looks like part of the design. */
 .camera-preview {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     max-height: 52vh;
     object-fit: cover;
-    background: #000;
+    background: #111A2E;
 }
 
 /* The status line is the key instruction, so it is larger than body text

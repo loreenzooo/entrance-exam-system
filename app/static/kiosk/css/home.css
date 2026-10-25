@@ -7,8 +7,32 @@
    ============================================ */
 
 .home {
+    position: relative;
     display: flex;
     min-height: 100vh;
+}
+
+/* Staff shortcut, tucked into the bottom-right corner so applicants ignore it */
+.home-admin {
+    position: absolute;
+    right: clamp(16px, 3vw, 40px);
+    bottom: clamp(14px, 2.5vh, 30px);
+    padding: 6px 10px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.home-admin:hover {
+    background: #EDEEF0;
+    color: var(--color-primary);
+}
+
+.home-admin:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* ---------- Left: navy hero ---------- */
@@ -39,10 +63,15 @@
     color: #AEB7CC;
 }
 
+/* The mark sits in the middle of whatever space is left between the brand
+   and the Welcome block, so it reads as centred in the navy panel. */
 .home-art {
+    flex: 1;
+    min-height: 0;
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin: auto 0 clamp(12px, 2vh, 28px);
+    margin: 0;
 }
 
 .home-art svg {

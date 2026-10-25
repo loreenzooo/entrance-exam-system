@@ -97,9 +97,15 @@ def _read_batch_form(allow_past=False):
 
 
 def _blocked_reason(batch):
-    """Why a batch can't be updated/deleted, or None if it can (2.2)."""
+    """Why a batch can't be updated/deleted, or None if it can (2.2).
+
+    Only future batches with no applicants are editable: once a batch has
+    started or ended, its record is history.
+    """
     if batch.is_ongoing:
         return "This batch is ongoing, so it can't be changed."
+    if batch.has_ended:
+        return "This batch has already ended, so it can't be changed."
     if batch.reserved_seats > 0:
         return ("This batch already has applicants assigned or reserved, "
                 "so it can't be changed.")
@@ -123,10 +129,25 @@ def batches():
 
     all_batches = (ExamBatch.query
                    .order_by(ExamBatch.exam_date, ExamBatch.start_time).all())
-    return render_template('admin/batches.html', batches=all_batches)
+
+    # ?edit=<id> opens that batch in the edit dialog (same pattern as Create).
+    editing = None
+    edit_id = request.args.get('edit', type=int)
+    if edit_id:
+        candidate = db.session.get(ExamBatch, edit_id)
+        if candidate is None:
+            flash("That batch no longer exists.", 'error')
+        else:
+            reason = _blocked_reason(candidate)
+            if reason:
+                flash(reason, 'error')
+            else:
+                editing = candidate
+
+    return render_template('admin/batches.html', batches=all_batches, editing=editing)
 
 
-@admin_bp.route('/batches/<int:batch_id>/edit', methods=['GET', 'POST'])
+@admin_bp.route('/batches/<int:batch_id>/edit', methods=['POST'])
 @login_required
 def edit_batch(batch_id):
     batch = ExamBatch.query.get_or_404(batch_id)
@@ -136,19 +157,16 @@ def edit_batch(batch_id):
         flash(reason, 'error')
         return redirect(url_for('admin.batches'))
 
-    if request.method == 'POST':
-        values, error = _read_batch_form(allow_past=True)
-        if error:
-            flash(error, 'error')
-            return redirect(url_for('admin.edit_batch', batch_id=batch.id))
+    values, error = _read_batch_form(allow_past=True)
+    if error:
+        flash(error, 'error')
+        return redirect(url_for('admin.batches', edit=batch.id))
 
-        for field, value in values.items():
-            setattr(batch, field, value)
-        db.session.commit()
-        flash("Batch updated.", 'success')
-        return redirect(url_for('admin.batches'))
-
-    return render_template('admin/edit_batch.html', batch=batch)
+    for field, value in values.items():
+        setattr(batch, field, value)
+    db.session.commit()
+    flash("Batch updated.", 'success')
+    return redirect(url_for('admin.batches'))
 
 
 @admin_bp.route('/batches/<int:batch_id>/delete', methods=['POST'])

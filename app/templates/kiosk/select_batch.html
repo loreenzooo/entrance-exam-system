@@ -38,6 +38,8 @@
 
             <button type="submit" class="btn-primary">Reserve My Seat</button>
         </form>
+
+        <a href="{{ url_for('kiosk.register') }}" class="helper-link">← Back to your details</a>
     {% else %}
         <div class="empty-state">
             <div class="empty-state-icon">
