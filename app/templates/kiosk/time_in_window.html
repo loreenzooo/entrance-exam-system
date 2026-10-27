@@ -1,0 +1,14 @@
+{% extends "kiosk/base_kiosk_panel.html" %}
+{% set flow = 'timein' %}
+{% set step = 1 %}
+
+{% block title %}{{ heading }} - Entrance Exam System{% endblock %}
+
+{% block content %}
+
+    <h1 class="kiosk-heading {{ 'is-warning' if tone == 'warning' else 'is-alert' }}">{{ heading }}</h1>
+    <p class="kiosk-subtext">{{ message }}</p>
+
+    <a href="{{ url_for('kiosk.home') }}" class="btn-primary btn-link">Back to Start</a>
+
+{% endblock %}

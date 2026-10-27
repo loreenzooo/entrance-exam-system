@@ -96,15 +96,15 @@ def _read_batch_form(allow_past=False):
     }, None
 
 
-def _blocked_reason(batch):
+def _blocked_reason(batch, for_delete=False):
     """Why a batch can't be updated/deleted, or None if it can (2.2).
 
-    Only future batches with no applicants are editable: once a batch has
-    started or ended, its record is history.
+    Edit requires a future batch with no applicants. Delete is a little more
+    forgiving: an ended batch that nobody attended can still be cleaned up.
     """
     if batch.is_ongoing:
         return "This batch is ongoing, so it can't be changed."
-    if batch.has_ended:
+    if batch.has_ended and not for_delete:
         return "This batch has already ended, so it can't be changed."
     if batch.reserved_seats > 0:
         return ("This batch already has applicants assigned or reserved, "
@@ -174,7 +174,7 @@ def edit_batch(batch_id):
 def delete_batch(batch_id):
     batch = ExamBatch.query.get_or_404(batch_id)
 
-    reason = _blocked_reason(batch)
+    reason = _blocked_reason(batch, for_delete=True)
     if reason:
         flash(reason, 'error')
         return redirect(url_for('admin.batches'))

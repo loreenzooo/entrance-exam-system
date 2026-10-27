@@ -114,7 +114,6 @@ class Applicant(db.Model):
     # Face embedding only, never the photo. Duplicate check (1.1 Step 4)
     # compares a new embedding against these.
     face_embedding = db.Column(JSONB, nullable=False)
-    biometric_consent_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # 1.1 Step 5
 
     # Reserved seat (1.1 Step 9)
     exam_batch_id = db.Column(db.Integer, db.ForeignKey('exam_batches.id'), nullable=False)

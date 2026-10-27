@@ -1,5 +1,5 @@
 {% extends "kiosk/base_kiosk.html" %}
-{% block title %}Entrance Exam Kiosk{% endblock %}
+{% block title %}Entrance Exam System{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='kiosk/css/home.css') }}">
@@ -12,7 +12,7 @@
 
         <div class="home-brand">
             Premier University
-            <small>Entrance Exam Kiosk</small>
+            <small>Entrance Exam System</small>
         </div>
 
         <div class="home-art">
@@ -89,6 +89,14 @@
     </section>
 
     <a href="{{ url_for('admin_auth.login') }}" class="home-admin">Admin Login</a>
+
+    <!-- Live clock, top-right -->
+    <div class="home-clock">
+        <span class="home-clock-time" id="home-clock-time">--:--</span>
+        <span class="home-clock-date" id="home-clock-date"></span>
+    </div>
+
+    <script src="{{ url_for('static', filename='kiosk/js/clock.js') }}"></script>
 
 </main>
 {% endblock %}

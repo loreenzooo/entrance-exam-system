@@ -55,6 +55,13 @@
     margin-top: 16px;
 }
 
+/* "Redirecting you to registration…" line under a message */
+.redirect-note {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: #9A5B14;
+}
+
 /* ---------- Form fields ---------- */
 
 .field {

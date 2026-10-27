@@ -1,0 +1,25 @@
+{% extends "kiosk/base_kiosk_panel.html" %}
+{% set flow = 'timein' %}
+{% set step = 1 %}
+
+{% block title %}Face Not Recognized - Entrance Exam System{% endblock %}
+
+{% block content %}
+
+    <h1 class="kiosk-heading is-alert">Face Not Recognized</h1>
+    <p class="kiosk-subtext">We could not identify you from this scan. If you have not registered yet, please register first.</p>
+
+    <p class="redirect-note">Redirecting you to registration…</p>
+
+    <a href="{{ url_for('kiosk.verify') }}" class="btn-primary btn-link">Go to Registration</a>
+
+    <a href="{{ url_for('kiosk.home') }}" class="helper-link">← Back to start</a>
+
+    <script>
+        // Give them a moment to read, then continue to the registration flow.
+        setTimeout(function () {
+            window.location.href = "{{ url_for('kiosk.verify') }}";
+        }, 8000);
+    </script>
+
+{% endblock %}

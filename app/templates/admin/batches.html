@@ -5,7 +5,6 @@
     <div class="page-header">
         <div>
             <h1 class="page-heading">Manage Exam Schedule</h1>
-            <p class="page-subtext">Batches can be edited or deleted only when they are not ongoing and have no applicants assigned.</p>
         </div>
         <button type="button" class="btn-primary" id="open-create">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -45,7 +44,8 @@
             <tbody>
                 {% for batch in batches %}
                 {% set status = batch.status %}
-                {% set locked = batch.is_ongoing or batch.has_ended or batch.reserved_seats > 0 %}
+                {% set locked_edit = batch.is_ongoing or batch.has_ended or batch.reserved_seats > 0 %}
+                {% set locked_delete = batch.is_ongoing or batch.reserved_seats > 0 %}
                 {% set pct = ((batch.reserved_seats / batch.capacity) * 100)|round|int if batch.capacity else 0 %}
                 <tr data-status="{{ status }}"
                     data-date="{{ batch.exam_date.strftime('%Y-%m-%d') }}"
@@ -61,13 +61,13 @@
                     <td><span class="status-badge status-{{ status }}">{{ status }}</span></td>
                     <td class="col-actions">
                         <a href="{{ url_for('admin.batches', edit=batch.id) }}"
-                           class="link-button {{ 'is-locked' if locked }}"
-                           {% if locked %}title="This batch can't be changed right now"{% endif %}>Edit</a>
+                           class="link-button {{ 'is-locked' if locked_edit }}"
+                           {% if locked_edit %}title="This batch can't be changed right now"{% endif %}>Edit</a>
                         <button type="button"
-                                class="link-button link-button-danger {{ 'is-locked' if locked }}"
+                                class="link-button link-button-danger {{ 'is-locked' if locked_delete }}"
                                 data-delete-url="{{ url_for('admin.delete_batch', batch_id=batch.id) }}"
                                 data-delete-label="batch #{{ batch.id }}"
-                                {% if locked %}disabled title="This batch can't be changed right now"{% endif %}>Delete</button>
+                                {% if locked_delete %}disabled title="This batch can't be changed right now"{% endif %}>Delete</button>
                     </td>
                 </tr>
                 {% endfor %}

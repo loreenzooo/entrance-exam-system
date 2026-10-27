@@ -1,7 +1,7 @@
 """
 Kiosk routes - Register (1.1) and Time In (1.2), narratives Version 1.1.
 
-Flow:  /  ->  /verify (face)  ->  /register (consent + details)
+Flow:  /  ->  /verify (face)  ->  /register (details)
           ->  /select-batch  ->  /confirmation
 
 Nothing is saved to the database until the applicant picks a batch.
@@ -30,6 +30,14 @@ _PENDING_KEYS = ('face_embedding', 'form')
 def _clear_pending():
     for key in _PENDING_KEYS:
         session.pop(key, None)
+
+
+def _spoken_time(moment):
+    """'9:00 AM today' when it is today, otherwise '9:00 AM, Oct 28, 2026'."""
+    clock = moment.strftime('%I:%M %p').lstrip('0')
+    if moment.date() == datetime.now().date():
+        return f"{clock} today"
+    return f"{clock}, {moment.strftime('%b %d, %Y')}"
 
 
 def _email_already_registered(email):
@@ -97,7 +105,7 @@ MAX_TIME_IN_ATTEMPTS = 3
 def home():
     """Kiosk home: Register or Time In. Wipes anything left by the last person."""
     _clear_pending()
-    for key in ('applicant_id', 'consent_at', 'time_in_attempts',
+    for key in ('applicant_id', 'time_in_attempts',
                 'time_in_applicant_id', 'time_in_already'):
         session.pop(key, None)
     return render_template('kiosk/home.html')
@@ -132,7 +140,7 @@ def verify():
 
 
 # --------------------------------------------------------------------------
-# Step 2 - consent + personal details (1.1 Steps 5-6)
+# Step 2 - personal details (1.1 Steps 5-6)
 # --------------------------------------------------------------------------
 @kiosk_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -151,7 +159,6 @@ def register():
             'email': request.form.get('email', '').strip(),
             'address': request.form.get('address', '').strip(),
         }
-        consent = request.form.get('biometric_consent') == 'yes'
 
         required = ('first_name', 'last_name', 'contact_number', 'email', 'address')
         if any(not form[f] for f in required):
@@ -174,11 +181,8 @@ def register():
             elif taken:
                 flash(f"That {' and '.join(taken)} are already registered. "
                       "Please use different ones.")
-            elif not consent:
-                flash("You must accept the biometric consent notice to continue.")
             else:
                 session['form'] = form
-                session['consent_at'] = datetime.utcnow().isoformat()
                 return redirect(url_for('kiosk.select_batch'))
 
     return render_template('kiosk/register.html', form=form)
@@ -191,7 +195,7 @@ def register():
 def select_batch():
     if 'face_embedding' not in session:
         return redirect(url_for('kiosk.verify'))
-    if 'form' not in session or 'consent_at' not in session:
+    if 'form' not in session:
         return redirect(url_for('kiosk.register'))
 
     if request.method == 'POST':
@@ -217,7 +221,6 @@ def select_batch():
             email=form['email'],
             address=form['address'],
             face_embedding=session['face_embedding'],
-            biometric_consent_at=datetime.fromisoformat(session['consent_at']),
             exam_batch_id=batch.id,
         )
         db.session.add(applicant)
@@ -228,12 +231,10 @@ def select_batch():
             # two kiosks saving the same person at once can still collide.
             db.session.rollback()
             _clear_pending()
-            session.pop('consent_at', None)
             flash("That email or contact number was just registered. Please start again.", 'error')
             return redirect(url_for('kiosk.home'))
 
         _clear_pending()
-        session.pop('consent_at', None)
         session['applicant_id'] = applicant.id
         return redirect(url_for('kiosk.confirmation'))
 
@@ -277,10 +278,9 @@ def time_in():
         if not match:
             attempts = session.get('time_in_attempts', 0) + 1
             if attempts >= MAX_TIME_IN_ATTEMPTS:
-                # After 3 unsuccessful tries, send them to Register
+                # After 3 unsuccessful tries, stop guessing and send them to register.
                 session.pop('time_in_attempts', None)
-                flash("We couldn't identify you after 3 tries. Please register first.")
-                return redirect(url_for('kiosk.verify'))
+                return render_template('kiosk/face_not_recognized.html')
             session['time_in_attempts'] = attempts
             flash(f"We couldn't identify you. Please try again "
                   f"(attempt {attempts} of {MAX_TIME_IN_ATTEMPTS}).")
@@ -303,13 +303,22 @@ def time_in():
         now = datetime.now()
 
         if now < opens_at:
-            flash("You can't time in yet. The exam has not started. "
-                  f"Time In opens at {opens_at.strftime('%I:%M %p, %b %d, %Y')}.")
-            return redirect(url_for('kiosk.time_in'))
+            return render_template(
+                'kiosk/time_in_window.html',
+                tone='warning',
+                heading='Time In Is Not Open Yet',
+                message=("Your exam batch has not started. Time In opens at "
+                         f"{_spoken_time(opens_at)}. Please come back then."),
+            )
 
         if now > closes_at:
-            flash("Time In for your exam batch has closed.")
-            return redirect(url_for('kiosk.time_in'))
+            return render_template(
+                'kiosk/time_in_window.html',
+                tone='alert',
+                heading='Time In Has Closed',
+                message=("Time In for your exam batch closed at "
+                         f"{_spoken_time(closes_at)}."),
+            )
 
         # Arriving after the start is still Present: there is no "Late" state.
         record = Attendance(

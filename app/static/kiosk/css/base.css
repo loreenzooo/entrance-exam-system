@@ -62,6 +62,11 @@ body {
     color: #A13A3A;
 }
 
+/* A heading that is a "not yet" state, e.g. "Time In Is Not Open Yet" */
+.kiosk-heading.is-warning {
+    color: #9A5B14;
+}
+
 .kiosk-subtext {
     color: var(--color-text-muted);
     font-size: 15px;
